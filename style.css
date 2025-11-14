@@ -1,0 +1,47 @@
+.container {
+    background-color: #4ecdc4;
+    max-width: 400px;     
+    width: 90%;            
+    margin: 40px auto;    
+    padding: 30px;
+    border-radius: 15px;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #333333;
+}
+
+.titlelogin h1 {
+    text-align: center;
+
+}
+
+.login p {
+    text-align: center;
+}
+
+input[type=text], input[type=email], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#loginbtn {
+    cursor: pointer;
+    padding: 12px 20px;
+    margin: 8px auto;  
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: block;  
+    width: fit-content;
+}
