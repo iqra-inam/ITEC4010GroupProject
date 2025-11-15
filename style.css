@@ -53,3 +53,37 @@ input[type=button] {
 input[type=button]:hover {
     background-color: #F5F5F5
 }
+
+.maintitle {
+    text-align: center;
+}
+
+.topnav a, input[type=message] {
+    border: 2px solid #ccc;
+    padding: 10px;
+    text-decoration: none;
+    background-color: #fafafa;
+    font-weight: bold;
+    color: #333333;    
+}
+
+.topnav a:hover {
+    background-color: #F5F5F5;
+    color: #333333;
+    text-decoration: none;
+}
+
+.topnav {
+    color: #fafafa;
+    padding: 0px;
+    text-align: center;
+}
+
+.customercontainer {
+    background-color: #4ecdc4;
+    max-width: 100%;     
+    width: 90%;            
+    margin: 40px auto;    
+    padding: 30px;
+    border-radius: 15px;
+}
