@@ -7,7 +7,7 @@
     border-radius: 15px;
 }
 
-body {
+.log body {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,7 +16,7 @@ body {
     color: #333333;
 }
 
-.titlelogin h1 {
+.titlelogin h1, .titleregister h1 {
     text-align: center;
 
 }
@@ -35,7 +35,7 @@ input[type=text], input[type=email], input[type=password] {
     box-sizing: border-box;
 }
 
-#loginbtn {
+#loginbtn, #signupbtn {
     cursor: pointer;
     padding: 12px 20px;
     margin: 8px auto;  
@@ -44,4 +44,12 @@ input[type=text], input[type=email], input[type=password] {
     box-sizing: border-box;
     display: block;  
     width: fit-content;
+}
+
+input[type=button] {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+input[type=button]:hover {
+    background-color: #F5F5F5
 }
