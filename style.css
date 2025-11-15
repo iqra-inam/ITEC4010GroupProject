@@ -87,3 +87,229 @@ input[type=button]:hover {
     padding: 30px;
     border-radius: 15px;
 }
+
+
+body {
+    background: #f4f6f8;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+
+/* MAIN WRAPPER */
+.dashboard-shell {
+    background: #ffffff;
+    width: 100%;
+    max-width: 1100px;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* HEADER */
+.dashboard-header h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 25px;
+}
+
+/* TOP STRIP */
+.top-strip {
+    background: #25c2bf;
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* AVATAR */
+.avatar {
+    background: #ffffff;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar-icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 3px solid #25c2bf;
+}
+
+/* NAV TABS */
+.nav-tabs {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-tab {
+    background: #ffffff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.nav-tab.active {
+    border-color: #ff6b6b;
+    font-weight: bold;
+}
+
+/* FILTER BUTTON */
+.filter-button {
+    background: #ffffff;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter-icon {
+    width: 20px;
+    height: 20px;
+    position: relative;
+}
+
+.filter-icon span {
+    display: block;
+    height: 2px;
+    background: #25c2bf;
+    margin: 4px 0;
+}
+
+.filter-icon-circle {
+    width: 7px;
+    height: 7px;
+    border: 2px solid #25c2bf;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.filter-icon-circle.c1 { top: -2px; right: -3px; }
+.filter-icon-circle.c2 { top: 6px; left: -4px; }
+.filter-icon-circle.c3 { top: 14px; right: -3px; }
+
+/* BUSINESS LIST */
+.business-list {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.business-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+.business-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.business-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.business-stats span {
+    font-size: 14px;
+    color: #555;
+}
+
+/* VIEW BUTTON */
+.view-button {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.queues-table-wrapper {
+    margin-top: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.queues-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.queues-table th,
+.queues-table td {
+    border: 2px solid #333;
+    padding: 14px 12px;
+    text-align: center;
+}
+
+.queues-table thead th {
+    font-weight: bold;
+}
+
+.queue-view-cell {
+    text-align: center;
+}
+
+/* MANAGE QUEUES TABLE */
+.manage-table-wrapper {
+    margin-top: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.manage-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.manage-table th,
+.manage-table td {
+    border: 2px solid #333;
+    padding: 14px 12px;
+    text-align: center;
+}
+
+.manage-table thead th {
+    font-weight: bold;
+}
+
+/* status dropdown styled like a pill */
+.status-select {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: none;
+    background: #ff6b6b;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.status-select:focus {
+    outline: none;
+}
+
+.manage-actions-cell {
+    text-align: center;
+}
