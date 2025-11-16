@@ -2,24 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Queue Management System</title>
+    <title>Login</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="log" style="background-color: #fafafa;">
+
+<body>
     <div class="container">
-        <div class="titlelogin">
-            <h1>Login</h1>
-        </div>
-        <div class="login">
-            <form>
-                <label for="email">Email</label><br>
-                <input type="email" id="email1" name="email" placeholder="Your email.." required><br><br>
-                <label for="password">Password</label><br>
-                <input type="password" id="password1" name="password" placeholder="Your password.." required><br><br>
-                <input type="button" value="Login" id="loginbtn" onclick="login()">
-                <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+        <h1>Login</h1>
+
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+
+        <button id="loginbtn" onclick="login()">Login</button>
+
+        <div class="text-link">
+            Don’t have an account? <a href="signup.html">Sign up</a>
         </div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
