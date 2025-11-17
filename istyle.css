@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'open sans', sans-serif;
 }
 
 body {
@@ -45,7 +45,7 @@ input:focus {
 button {
     width: 100%;
     padding: 12px;
-    background: #4a77ff;
+    background: #ff6b6b;
     color: white;
     border: none;
     border-radius: 8px;
@@ -53,7 +53,7 @@ button {
 }
 
 button:hover {
-    background: #3c62d6;
+    background: #ff8989;
 }
 
 .text-link {
@@ -68,7 +68,7 @@ button:hover {
 
 .topnav {
     width: 100%;
-    background: #4a77ff;
+    background: #25c2bf;
     padding: 12px 20px;
     display: flex;
     justify-content: space-between;
@@ -154,7 +154,7 @@ button:hover {
     padding: 10px;
     border-radius: 8px;
     border: none;
-    background: #4a77ff;
+    background: #ff6b6b;
     color: white;
     cursor: pointer;
 }
@@ -187,7 +187,7 @@ button:hover {
 }
 
 .notification-card.unread {
-    border-left: 6px solid #4a77ff;
+    border-left: 6px solid #ff6b6b;
     background: #f0f3ff;
 }
 
@@ -204,12 +204,12 @@ button:hover {
     padding: 8px 14px;
     border: none;
     border-radius: 8px;
-    background: #4a77ff;
+    background: #ff6b6b;
     color: white;
     cursor: pointer;
     width: 20%;
 }
 
 .mark-read-btn:hover {
-    background: #3c62d6;
+    background: #ff8989;
 }
