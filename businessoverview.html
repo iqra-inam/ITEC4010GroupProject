@@ -6,77 +6,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="mstyle.css">
 </head>
+
 <body>
 
-  <div class="dashboard-shell">
-    
-    <div class="dashboard-header">
-      <h1>Business Dashboard: Overview</h1>
-    </div>
+  <div class="page-wrapper">
 
-    <div class="top-strip">
+      <h1 class="app-title">Business Dashboard - Overview</h1><br>
 
-      <div class="avatar">
-        <div class="avatar-icon"></div>
-      </div>
+      <!-- TOP NAV -->
+      <div class="topnav">
 
-      <div class="nav-tabs">
-        <a href="businessoverview.html" class="nav-tab active">Overview</a>
-        <a href="businessQueue.html" class="nav-tab">Queues</a>
-        <a href="businessManage.html" class="nav-tab">Manage Queues</a>
-        <button class="nav-tab">View Reports / Analytics</button>
-        <button class="nav-tab">Search</button>
-      </div>
-
-      <div class="filter-button">
-        <div class="filter-icon">
-          <span></span>
-          <span></span>
-          <span></span>
-          <div class="filter-icon-circle c1"></div>
-          <div class="filter-icon-circle c2"></div>
-          <div class="filter-icon-circle c3"></div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="business-list">
-
-      <div class="business-card">
-        <div class="business-meta">
-          <div class="business-name">Business #1</div>
-          <div class="business-stats">
-            <span>Current queue length: …</span>
-            <span>Average wait time: …</span>
+          <!-- LEFT NAV LINKS -->
+          <div class="nav-left">
+              <a href="businessoverview.html" class="active">Overview</a>
+              <a href="businessQueue.html">Queues</a>
+              <a href="businessManage.html">Manage Queues</a>
+              <a href="businessReports.html">Reports/Analytics</a>
           </div>
-        </div>
-        <button class="view-button">View</button>
-      </div>
 
-      <div class="business-card">
-        <div class="business-meta">
-          <div class="business-name">Business #2</div>
-          <div class="business-stats">
-            <span>Current queue length: …</span>
-            <span>Average wait time: …</span>
+          <!-- RIGHT SIDE ICONS -->
+          <div class="nav-right">
+              <div class="account-icon">
+                  <a href="myaccount.html">👤</a>
+              </div>
           </div>
-        </div>
-        <button class="view-button1">View</button>
       </div>
 
-      <div class="business-card">
-        <div class="business-meta">
-          <div class="business-name">Business #3</div>
-          <div class="business-stats">
-            <span>Current queue length: …</span>
-            <span>Average wait time: …</span>
+
+      <!-- MAIN DASHBOARD -->
+      <div class="dashboard-container">
+
+          <h2 class="dashboard-title">Your Businesses</h2>
+
+          <div class="business-list-rows">
+
+              <!-- Card 1 -->
+              <div class="business-row">
+                  <div class="biz-info">
+                      <h3>Business #1</h3>
+                      <p><strong>Current queue length:</strong> …</p>
+                      <p><strong>Average wait time:</strong> …</p>
+                  </div>
+                  <div class="biz-actions">
+                      <button class="view-btn">View</button>
+                  </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="business-row">
+                  <div class="biz-info">
+                      <h3>Business #2</h3>
+                      <p><strong>Current queue length:</strong> …</p>
+                      <p><strong>Average wait time:</strong> …</p>
+                  </div>
+                  <div class="biz-actions">
+                      <button class="view-btn">View</button>
+                  </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="business-row">
+                  <div class="biz-info">
+                      <h3>Business #3</h3>
+                      <p><strong>Current queue length:</strong> …</p>
+                      <p><strong>Average wait time:</strong> …</p>
+                  </div>
+                  <div class="biz-actions">
+                      <button class="view-btn">View</button>
+                  </div>
+              </div>
+
           </div>
-        </div>
-        <button class="view-button2">View</button>
-      </div>
 
-    </div>
+      </div>
 
   </div>
 
