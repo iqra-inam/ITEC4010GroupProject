@@ -24,3 +24,4 @@ exampleDataFromDB.forEach(n => {
 
     list.appendChild(clone);
 });
+
