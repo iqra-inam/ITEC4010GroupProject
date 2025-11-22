@@ -12,7 +12,7 @@
 
     <h1 class="app-title">Business Dashboard: Manage Queues</h1><br>
 
-    <!-- TOP NAV (same style as customer dashboard) -->
+    <!-- TOP NAV -->
     <div class="topnav">
 
       <!-- LEFT NAV -->
@@ -21,17 +21,17 @@
         <a href="businessQueue.html">Queues</a>
         <a href="businessManage.html" class="active">Manage Queues</a>
         <a href="businessReports.html">Reports/Analytics</a>
-
       </div>
 
-      <!-- RIGHT NAV -->
       <div class="nav-right">
+  <div class="account-dropdown">
+    <div class="account-icon">👤</div>
 
-        <div class="account-icon">
-          <a href="businessaccount.html">👤</a>
-        </div>
-      </div>
-
+    <div class="account-menu">
+      <a href="loginbusiness.html">Logout</a>
+    </div>
+  </div>
+</div>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -39,6 +39,39 @@
 
       <h2 class="dashboard-title">Manage Active Queue</h2>
 
+      <!-- 3 CARD LAYOUT -->
+      <div class="manage-queue-cards">
+
+        <!-- ADD QUEUE -->
+        <div class="queue-card">
+          <div class="queue-card-content">
+            
+            <div class="big-plus">+</div>
+          </div>
+          <a href="businessaddqueue.html">
+            <button class="queue-btn add-btn">Add Queue</button>
+          </a>
+        </div>
+
+        <!-- LIST OF QUEUES -->
+        <div class="queue-card">
+          <div class="queue-card-content">
+            <p>have a list of queues, scroll down option</p>
+          </div>
+          <button class="queue-btn delete-btn">Delete Queue</button>
+        </div>
+
+        <!-- EDIT QUEUE -->
+        <div class="queue-card">
+          <div class="queue-card-content">
+            <p>edit queue should lead to the manage queue page</p>
+          </div>
+          <button class="queue-btn edit-btn">Edit Queue</button>
+        </div>
+
+      </div>
+
+      <!-- ACTIVE QUEUE TABLE -->
       <div class="manage-table-wrapper">
         <table class="manage-table">
           <thead>
