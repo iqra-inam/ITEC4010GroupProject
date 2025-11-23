@@ -5,92 +5,42 @@
     <title>Customer Dashboard</title>
     <link rel="stylesheet" href="istyle.css">
 </head>
-
 <body>
 
-    <div class="page-wrapper">
+<div class="page-wrapper">
 
-        <h1 class="app-title">Queue Management System</h1><br>
+    <h1 class="app-title">Queue Management System</h1><br>
 
-        <!-- TOP NAV -->
-        <div class="topnav">
-
-            <!-- LEFT NAV LINKS -->
-            <div class="nav-left">
-                <a href="customerdashboard.html" class="active">Home</a>
-                <a href="myqueue.html">My Queue</a>
-                <a href="notificationinbox.html">Notification Inbox</a>
-            </div>
-
-            <!-- RIGHT SIDE: FILTER + ACCOUNT -->
-            <div class="nav-right">
-                <select class="filter-dropdown">
-                    <option value="">Filter</option>
-                    <option value="clinics">Clinics</option>
-                    <option value="offices">Offices</option>
-                    <option value="services">Services</option>
-                </select>
-
-                <div class="account-icon">
-                    <a href="myaccount.html">👤</a>
-                </div>
-            </div>
-
+    <!-- TOP NAV -->
+    <div class="topnav">
+        <div class="nav-left">
+            <a href="customerdashboard.html" class="active">Home</a>
+            <a href="customerdashboardmyqueue.html">My Queue</a>
+            <a href="notificationinbox.html">Notification Inbox</a>
         </div>
 
-        <!-- MAIN DASHBOARD -->
-        <div class="dashboard-container">
+        <div class="nav-right">
+            <select class="filter-dropdown" id="filterDropdown">
+                <option value="">Filter</option>
+                <option value="clinics">Clinics</option>
+                <option value="offices">Offices</option>
+                <option value="services">Services</option>
+            </select>
 
-            <h2 class="dashboard-title">Available Businesses</h2>
-
-            <div class="business-list-rows">
-
-                <!-- BUSINESS 1 -->
-                <div class="business-row">
-                    <div class="biz-info">
-                        <h3>Business #1</h3>
-                        <p><strong>Location:</strong> Toronto</p>
-                        <p><strong>Date:</strong> Mon–Fri</p>
-                        <p><strong>Waiting Time:</strong> ~15 min</p>
-                        <p><strong>Current Queue Length:</strong> 8 people</p>
-                    </div>
-                    <div class="biz-actions">
-                        <button class="view-btn">View</button>
-                    </div>
-                </div>
-
-                <!-- BUSINESS 2 -->
-                <div class="business-row">
-                    <div class="biz-info">
-                        <h3>Business #2</h3>
-                        <p><strong>Location:</strong> North York</p>
-                        <p><strong>Date:</strong> Weekends</p>
-                        <p><strong>Waiting Time:</strong> ~25 min</p>
-                        <p><strong>Current Queue Length:</strong> 14 people</p>
-                    </div>
-                    <div class="biz-actions">
-                        <button class="view-btn">View</button>
-                    </div>
-                </div>
-
-                <!-- BUSINESS 3 -->
-                <div class="business-row">
-                    <div class="biz-info">
-                        <h3>Business #3</h3>
-                        <p><strong>Location:</strong> Mississauga</p>
-                        <p><strong>Date:</strong> Mon–Sat</p>
-                        <p><strong>Waiting Time:</strong> ~10 min</p>
-                        <p><strong>Current Queue Length:</strong> 4 people</p>
-                    </div>
-                    <div class="biz-actions">
-                        <button class="view-btn">View</button>
-                    </div>
-                </div>
-
+            <div class="account-icon">
+                <a href="customerdashboardmyaccount.html">👤</a>
             </div>
         </div>
-
     </div>
-    <script src="script.js"></script>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="dashboard-container">
+        <h2 class="dashboard-title">Available Businesses</h2>
+        <div class="business-list-rows" id="businessContainer"></div>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>

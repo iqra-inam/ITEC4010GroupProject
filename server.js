@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const db = require('./db');
 
 const app = express();
+const PORT = 3000;
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
@@ -17,18 +19,13 @@ app.post('/signup', async (req, res) => {
   }
 
   try {
-    // Check if email already exists
     db.query("SELECT id FROM users WHERE email = ?", [email], async (err, results) => {
-      if (err) {
-        console.error(err);
-        return res.json({ success: false, message: "Database error" });
-      }
+      if (err) return res.json({ success: false, message: "Database error" });
 
       if (results.length > 0) {
-        return res.json({ success: false, message: "Email already has an account..." });
+        return res.json({ success: false, message: "Email already has an account" });
       }
 
-      // ✅ HASH PASSWORD HERE
       const hashedPassword = await bcrypt.hash(password, 10);
 
       db.query(
@@ -36,17 +33,13 @@ app.post('/signup', async (req, res) => {
         [username, email, hashedPassword],
         (insertErr) => {
           if (insertErr) {
-            console.error(insertErr);
             return res.json({ success: false, message: "Could not create account" });
           }
-
           res.json({ success: true, message: "Signup successful!" });
         }
       );
     });
-
   } catch (error) {
-    console.error(error);
     res.json({ success: false, message: "Server error" });
   }
 });
@@ -69,12 +62,11 @@ app.post('/login', (req, res) => {
       return res.json({ success: false, message: "Incorrect password" });
     }
 
-    res.json({ success: true });
+    res.json({ success: true, message: "Login successful" });
   });
 });
 
-// ================= EMPLOYEE LOGIN =================
-// ================= EMPLOYEE LOGIN =================
+// ================= EMPLOYEE LOGIN (NO HASH) =================
 app.post('/employee-login', (req, res) => {
   const { employeeId, password } = req.body;
 
@@ -90,12 +82,22 @@ app.post('/employee-login', (req, res) => {
 
       const employee = results[0];
 
-      // Compare plain password directly
       if (password !== employee.password) {
         return res.json({ success: false, message: "Incorrect password" });
       }
 
-      return res.json({ success: true, message: "Login successful" });
+      res.json({ success: true, message: "Employee login successful" });
     }
   );
+});
+
+// ================= GET BUSINESSES =================
+app.get('/businesses', (req, res) => {
+  db.query("SELECT * FROM businesses", (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.json({ success: false, businesses: [] });
+    }
+    res.json({ success: true, businesses: results });
+  });
 });
