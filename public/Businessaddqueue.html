@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Business Dashboard – Add Queue</title>
+  <link rel="stylesheet" href="mstyle.css">
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+
+    <h1 class="app-title">Business Dashboard</h1><br>
+
+    <!-- TOP NAV -->
+    <div class="topnav">
+
+      <!-- LEFT NAV -->
+      <div class="nav-left">
+        <a href="businessoverview.html">Overview</a>
+        <a href="businessQueue.html">Queues</a>
+        <a href="businessManage.html">Manage Queues</a>
+        <a href="businessReports.html">View Reports / Analytics</a>
+      </div>
+
+      <!-- RIGHT NAV -->
+      <div class="nav-right">
+  <div class="account-dropdown">
+    <div class="account-icon">👤</div>
+
+    <div class="account-menu">
+      <a href="loginbusiness.html">Logout</a>
+    </div>
+  </div>
+</div>
+    </div>
+    <!-- MAIN CONTENT -->
+    <div class="dashboard-container">
+
+      <!-- White form card -->
+      <div class="add-form-card">
+
+        <form class="add-queue-form">
+
+          <label>Queue Name</label>
+          <input type="text" placeholder="Name of the queue">
+
+          <label>Type</label>
+          <input type="text" placeholder="Office, clinic, retail, etc.">
+
+          <label>Date</label>
+          <input type="date">
+
+          <label>Location</label>
+          <input type="text" placeholder="Address or description">
+
+          <label>Access</label>
+          <input type="text" placeholder="Public, restricted, etc.">
+
+          <label>Capacity</label>
+          <input type="number" placeholder="Max people allowed">
+
+          <button type="submit" class="queue-btn add-btn big-submit-btn">Add</button>
+          
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
