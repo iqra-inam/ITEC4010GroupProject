@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Business Details</title>
+    <link rel="stylesheet" href="istyle.css">
+</head>
+<body>
+<div class="page-wrapper">
+    <h1 class="app-title">Business Details</h1>
+    <div id="businessDetailsContainer">Loading...</div>
+</div>
+
+<script>
+    // Get the business id from URL
+    const params = new URLSearchParams(window.location.search);
+    const businessId = params.get('id');
+
+    const container = document.getElementById('businessDetailsContainer');
+
+    async function loadBusinessDetails() {
+        try {
+            const response = await fetch('http://localhost:3000/businesses');
+            const data = await response.json();
+            const businesses = data.businesses;
+
+            const biz = businesses.find(b => b.id == businessId);
+            if (!biz) {
+                container.textContent = "Business not found.";
+                return;
+            }
+
+            container.innerHTML = `
+                <h2>${biz.name}</h2>
+                <p><strong>Location:</strong> ${biz.location}</p>
+                <p><strong>Working Days:</strong> ${biz.working_days}</p>
+                <p><strong>Waiting Time:</strong> ${biz.waiting_time} mins</p>
+                <p><strong>Queue Length:</strong> ${biz.queue_length}</p>
+                <p><strong>Category:</strong> ${biz.category}</p>
+                <p><strong>Description:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <a href="customerdashboard.html">⬅ Back to Dashboard</a>
+            `;
+        } catch (err) {
+            console.error(err);
+            container.textContent = "Error loading business details.";
+        }
+    }
+
+    loadBusinessDetails();
+</script>
+</body>
+</html>

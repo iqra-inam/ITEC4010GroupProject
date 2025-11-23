@@ -52,3 +52,20 @@ INSERT INTO employees (employee_id, full_name, role, password) VALUES
 SHOW TABLES;
 
 SELECT * FROM employees;
+
+CREATE TABLE businesses (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  location VARCHAR(100) NOT NULL,
+  working_days VARCHAR(50),
+  waiting_time INT,
+  queue_length INT,
+  category VARCHAR(50)
+);
+
+INSERT INTO businesses (name, location, working_days, waiting_time, queue_length, category) VALUES
+('Downtown Clinic', 'Toronto', 'Mon-Fri', 15, 8, 'clinics'),
+('North York Office', 'North York', 'Weekends', 25, 14, 'offices'),
+('Mississauga Service Centre', 'Mississauga', 'Mon-Sat', 10, 4, 'services');
+
+SELECT * FROM businesses;
