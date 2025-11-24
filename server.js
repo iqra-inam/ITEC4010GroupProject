@@ -101,3 +101,57 @@ app.get('/businesses', (req, res) => {
     res.json({ success: true, businesses: results });
   });
 });
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+});
+
+// POST /join-queue
+app.post('/join-queue', (req, res) => {
+    const { userId, businessId } = req.body;
+
+    if (!userId || !businessId) {
+        return res.json({ success: false, message: "Missing userId or businessId" });
+    }
+
+    // Check if user is already in a queue
+    db.query("SELECT * FROM queue WHERE user_id = ?", [userId], (err, results) => {
+        if (err) return res.json({ success: false, message: "Database error" });
+
+        if (results.length > 0) {
+            const existingTicket = results[0].ticket_number;
+            return res.json({
+                success: false,
+                message: "You are already in a queue",
+                ticketNumber: existingTicket,
+                businessId: results[0].business_id
+            });
+        }
+
+        // Generate ticket number
+        const ticketNumber = `A${Math.floor(Math.random() * 99 + 1)}`;
+
+        db.query(
+            "INSERT INTO queue (user_id, business_id, ticket_number) VALUES (?, ?, ?)",
+            [userId, businessId, ticketNumber],
+            (err2) => {
+                if (err2) return res.json({ success: false, message: "Could not join queue" });
+
+                res.json({
+                    success: true,
+                    ticketNumber
+                });
+            }
+        );
+    });
+});
+
+// GET /user-queue/:userId
+app.get('/user-queue/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    db.query("SELECT * FROM queue WHERE user_id = ?", [userId], (err, results) => {
+        if (err) return res.json({ success: false, queue: null });
+        res.json({ success: true, queue: results[0] || null });
+    });
+});

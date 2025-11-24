@@ -112,11 +112,11 @@ async function loadBusinesses(filter = "") {
         const response = await fetch("http://localhost:3000/businesses");
         const data = await response.json();
 
-        const businesses = data; // <-- use the array directly
+        const businesses = data.businesses; // ✅ CORRECT DATA SOURCE
 
         container.innerHTML = "";
 
-        if (businesses.length === 0) {
+        if (!businesses || businesses.length === 0) {
             container.textContent = "No businesses found.";
             return;
         }
@@ -126,21 +126,36 @@ async function loadBusinesses(filter = "") {
             .forEach(biz => {
                 const card = document.createElement("div");
                 card.className = "business-card";
+
                 card.innerHTML = `
-                    <h3>${biz.name}</h3>
-                    <p><strong>Location:</strong> ${biz.location}</p>
-                    <p><strong>Working Days:</strong> ${biz.working_days}</p>
-                    <p><strong>Waiting Time:</strong> ${biz.waiting_time} mins</p>
-                    <p><strong>Queue Length:</strong> ${biz.queue_length}</p>
-                    <p><strong>Category:</strong> ${biz.category}</p>
+                    <div class="card-content">
+                        <div class="card-info">
+                            <h3>${biz.name}</h3>
+                            <p><strong>Location:</strong> ${biz.location}</p>
+                            <p><strong>Working Days:</strong> ${biz.working_days}</p>
+                            <p><strong>Waiting Time:</strong> ${biz.waiting_time} mins</p>
+                            <p><strong>Queue Length:</strong> ${biz.queue_length}</p>
+                            <p><strong>Category:</strong> ${biz.category}</p>
+                        </div>
+                        <div class="card-action">
+                            <button class="view-btn" data-id="${biz.id}">View</button>
+                        </div>
+                    </div>
                 `;
+
                 container.appendChild(card);
+
+                card.querySelector(".view-btn").addEventListener("click", () => {
+                    window.location.href = `businessdetails.html?id=${biz.id}`;
+                });
             });
+
     } catch (err) {
         console.error(err);
         container.textContent = "Server error. Could not load businesses.";
     }
 }
+
 
 // ---------------- FILTER DROPDOWN ----------------
 const filterDropdown = document.getElementById("filterDropdown");
@@ -150,31 +165,8 @@ if (filterDropdown) {
     });
 }
 
-// ---------------- LOAD BUSINESSES ON PAGE LOAD ----------------
+
+// ---------------- AUTO LOAD ON PAGE OPEN ----------------
 window.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("businessContainer");
-    if (container) loadBusinesses();
+    loadBusinesses(); 
 });
-
-businesses
-    .filter(b => filter === "" || b.category === filter)
-    .forEach(biz => {
-        const card = document.createElement("div");
-        card.className = "business-card";
-        card.innerHTML = `
-            <h3>${biz.name}</h3>
-            <p><strong>Location:</strong> ${biz.location}</p>
-            <p><strong>Working Days:</strong> ${biz.working_days}</p>
-            <p><strong>Waiting Time:</strong> ${biz.waiting_time} mins</p>
-            <p><strong>Queue Length:</strong> ${biz.queue_length}</p>
-            <p><strong>Category:</strong> ${biz.category}</p>
-            <button class="view-btn" data-id="${biz.id}">View</button>
-        `;
-        container.appendChild(card);
-
-        // Add click listener here, right after creating the button
-        const viewButton = card.querySelector('.view-btn');
-        viewButton.addEventListener('click', () => {
-            window.location.href = `businessdetails.html?id=${biz.id}`;
-        });
-    });
