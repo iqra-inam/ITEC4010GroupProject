@@ -69,3 +69,36 @@ INSERT INTO businesses (name, location, working_days, waiting_time, queue_length
 ('Mississauga Service Centre', 'Mississauga', 'Mon-Sat', 10, 4, 'services');
 
 SELECT * FROM businesses;
+
+ALTER TABLE businesses
+ADD COLUMN description TEXT;
+
+UPDATE businesses
+SET description = 'Downtown Clinic is a full-service medical facility specializing in pediatric and family care. Our team of certified doctors and nurses ensures that patients of all ages receive compassionate, high-quality medical attention. We offer flexible appointment scheduling, walk-in options, and a child-friendly environment to make visits as comfortable as possible.'
+WHERE id = 1;
+
+UPDATE businesses
+SET description = 'North York Office provides professional office space and consultation services for legal, financial, and business needs. Equipped with modern facilities, private meeting rooms, and experienced staff, clients can conduct confidential meetings, receive expert advice, and access administrative support in a professional and welcoming setting.'
+WHERE id = 2;
+
+UPDATE businesses
+SET description = 'Mississauga Service Centre is your go-to hub for a wide variety of customer services, including document processing, technical support, and community assistance programs. Our trained staff are committed to providing efficient, reliable, and friendly service to ensure your tasks are completed quickly and correctly. Convenient parking and extended hours make it easy to visit any day of the week.'
+WHERE id = 3;
+
+CREATE TABLE IF NOT EXISTS queue (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    business_id INT NOT NULL,
+    user_id INT NOT NULL,
+    ticket_number VARCHAR(10) NOT NULL,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_user_queue (user_id)  -- prevents same user joining multiple queues
+);
+
+CREATE TABLE IF NOT EXISTS queue (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    business_id INT NOT NULL,
+    ticket_number VARCHAR(10) NOT NULL,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_user_queue (user_id)
+);
