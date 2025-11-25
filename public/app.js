@@ -170,3 +170,4 @@ if (filterDropdown) {
 window.addEventListener("DOMContentLoaded", () => {
     loadBusinesses(); 
 });
+

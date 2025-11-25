@@ -301,3 +301,52 @@ button:hover {
 .btn:hover {
     background: #ff8989;
 }
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-box p {
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.modal-btn.yes {
+    background: #2ecc71;
+    color: white;
+}
+
+.modal-btn.no {
+    background: #e74c3c;
+    color: white;
+}
