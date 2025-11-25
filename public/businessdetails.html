@@ -103,76 +103,139 @@
     </div>
 </div>
 
+<!-- Queue Confirmation Modal -->
+<div id="queueModal" class="modal-overlay">
+    <div class="modal-box">
+        <p id="modalText">Are you sure you want to join this queue?</p>
+        <div class="modal-buttons">
+            <button id="confirmYes" class="modal-btn yes">Yes</button>
+            <button id="confirmNo" class="modal-btn no">No</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal-overlay">
+    <div class="modal-box">
+        <p id="successText"></p>
+        <button id="successOk" class="modal-btn yes">OK</button>
+    </div>
+</div>
+
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const businessId = params.get('id');
-    const container = document.getElementById('businessDetailsContainer');
+   const params = new URLSearchParams(window.location.search);
+const businessId = params.get('id');
+const container = document.getElementById('businessDetailsContainer');
 
-    async function loadBusinessDetails() {
-        try {
-            const response = await fetch(`http://localhost:3000/businesses`);
-            const data = await response.json();
-            const businesses = data.businesses;
+async function loadBusinessDetails() {
+    try {
+        const response = await fetch(`http://localhost:3000/businesses`);
+        const data = await response.json();
+        const businesses = data.businesses;
 
-            const biz = businesses.find(b => b.id == businessId);
-            if (!biz) {
-                container.textContent = "Business not found.";
-                return;
-            }
+        const biz = businesses.find(b => b.id == businessId);
+        if (!biz) {
+            container.textContent = "Business not found.";
+            return;
+        }
 
-            container.innerHTML = `
-                <h2>${biz.name}</h2>
-                <p><strong>Location:</strong> ${biz.location}</p>
-                <p><strong>Working Days:</strong> ${biz.working_days}</p>
-                <p><strong>Waiting Time:</strong> ${biz.waiting_time} mins</p>
-                <p><strong>Queue Length:</strong> ${biz.queue_length}</p>
-                <p><strong>Category:</strong> ${biz.category}</p>
-                <p><strong>Description:</strong> ${biz.description}</p>
-                <div class="button-row">
-                    <button class="btn" id="joinQueueBtn">Join Queue</button>
+        container.innerHTML = `
+            <h2>${biz.name}</h2>
+            <p><strong>Location:</strong> ${biz.location}</p>
+            <p><strong>Working Days:</strong> ${biz.working_days}</p>
+            <p><strong>Waiting Time:</strong> ${biz.waiting_time} mins</p>
+            <p><strong>Queue Length:</strong> ${biz.queue_length}</p>
+            <p><strong>Category:</strong> ${biz.category}</p>
+            <p><strong>Description:</strong> ${biz.description}</p>
+
+            <div class="button-row">
+                <button class="btn small-btn" id="joinQueueBtn">Join Queue</button>
+                <div style="margin-top:10px;">
                     <a href="customerdashboard.html">⬅ Back to Dashboard</a>
                 </div>
+            </div>
+        `;
+
+        /* -------- POPUPS HTML (added dynamically) -------- */
+        document.body.insertAdjacentHTML("beforeend", `
+            <div id="queueModal" class="modal-overlay">
+                <div class="modal-box">
+                    <p>Are you sure you want to join this queue?</p>
+                    <div class="modal-buttons">
+                        <button id="confirmYes" class="modal-btn yes">Yes</button>
+                        <button id="confirmNo" class="modal-btn no">No</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="successModal" class="modal-overlay">
+                <div class="modal-box">
+                    <p id="successText"></p>
+                    <button id="successOk" class="modal-btn yes">OK</button>
+                </div>
+            </div>
+        `);
+
+        const joinQueueBtn = document.getElementById("joinQueueBtn");
+
+        const storedTicket = localStorage.getItem(`ticket_business_${businessId}`);
+        const hasGlobalQueue = localStorage.getItem('globalQueue') === 'true';
+
+        if (storedTicket) {
+            joinQueueBtn.disabled = true;
+            joinQueueBtn.textContent = `Your Ticket: ${storedTicket}`;
+        } else if (hasGlobalQueue) {
+            joinQueueBtn.disabled = true;
+            joinQueueBtn.textContent = `Already in another queue`;
+        }
+
+        const modal = document.getElementById("queueModal");
+        const successModal = document.getElementById("successModal");
+        const yesBtn = document.getElementById("confirmYes");
+        const noBtn = document.getElementById("confirmNo");
+        const successText = document.getElementById("successText");
+        const successOk = document.getElementById("successOk");
+
+        joinQueueBtn.addEventListener("click", () => {
+            if (hasGlobalQueue) return;
+            modal.style.display = "flex";
+        });
+
+        noBtn.onclick = () => {
+            modal.style.display = "none";
+        };
+
+        yesBtn.onclick = () => {
+            modal.style.display = "none";
+
+            const ticketNumber = `A${biz.queue_length + 1}`;
+
+            localStorage.setItem(`ticket_business_${businessId}`, ticketNumber);
+            localStorage.setItem('globalQueue', 'true');
+
+            joinQueueBtn.disabled = true;
+            joinQueueBtn.textContent = `Your Ticket: ${ticketNumber}`;
+
+            successText.innerHTML = `
+                ✅ You have successfully joined the queue<br><br>
+                <strong>Ticket Number:</strong> ${ticketNumber}
             `;
 
-            const joinQueueBtn = document.getElementById("joinQueueBtn");
+            successModal.style.display = "flex";
+        };
 
-            const storedTicket = localStorage.getItem(`ticket_business_${businessId}`);
-            const hasGlobalQueue = localStorage.getItem('globalQueue') === 'true';
+        successOk.onclick = () => {
+            successModal.style.display = "none";
+        };
 
-            if (storedTicket) {
-                joinQueueBtn.disabled = true;
-                joinQueueBtn.textContent = `Your Ticket: ${storedTicket}`;
-            } else if (hasGlobalQueue) {
-                joinQueueBtn.disabled = true;
-                joinQueueBtn.textContent = `Already in another queue`;
-            }
-
-            joinQueueBtn.addEventListener("click", () => {
-                if (hasGlobalQueue) {
-                    alert("You are already in a queue and cannot join another one.");
-                    return;
-                }
-
-                const ticketNumber = `A${biz.queue_length + 1}`;
-                localStorage.setItem(`ticket_business_${businessId}`, ticketNumber);
-                localStorage.setItem('globalQueue', 'true');
-
-                const message = document.createElement('p');
-                message.style.marginTop = "15px";
-                message.innerHTML = `<strong>Ticket Number:</strong> ${ticketNumber} <br> You have successfully joined the queue.`;
-
-                container.appendChild(message);
-                joinQueueBtn.disabled = true;
-                joinQueueBtn.textContent = `Your Ticket: ${ticketNumber}`;
-            });
-
-        } catch (err) {
-            console.error(err);
-            container.textContent = "Error loading business details.";
-        }
+    } catch (err) {
+        console.error(err);
+        container.textContent = "Error loading business details.";
     }
+}
 
-    loadBusinessDetails();
+loadBusinessDetails();
+
 </script>
 </body>
 </html>
