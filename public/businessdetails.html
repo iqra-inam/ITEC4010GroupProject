@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Business Details</title>
+    <link rel="stylesheet" href="istyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+    body {
+        background-color: #25c2bf; 
+        font-family: 'Open Sans', sans-serif;
+        display: flex;
+        justify-content: center; 
+        align-items: center;    
+        height: 100vh;          
+        margin: 0;               
+    }
+
+    .page-wrapper {
+        background-color: #fafafa; 
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 900px;
+        width: 90%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .page-wrapper p {
+    line-height: 1.75;
+    }
+
+    h1.app-title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .popup-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .popup-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+    }
+
+    .button-row {
+        display: flex;
+        justify-content: center; 
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        border: none;
+        background: #ff6b6b;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn:hover {
+        background: #ff8989;
+    }
+
+    #joinQueueBtn {
+        padding: 10px 10px;
+        font-size: 0.9rem;
+    }
+</style>
+
+</head>
+<body>
+<div class="page-wrapper">
+    <h1 class="app-title">Business Details</h1>
+    <div id="businessDetailsContainer">Loading...</div>
+</div>
+
+<!-- POPUP OVERLAY -->
+<div id="popupOverlay" class="popup-overlay">
+    <div class="popup-box">
+        <h2>Are you sure?</h2>
+        <p>Do you really want to leave the queue?</p>
+        <div class="button-row">
+            <a href="customerdashboard.html" class="btn">Yes, Leave</a>
+            <button class="btn" id="closePopup">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Queue Confirmation Modal -->
+<div id="queueModal" class="modal-overlay">
+    <div class="modal-box">
+        <p id="modalText">Are you sure you want to join this queue?</p>
+        <div class="modal-buttons">
+            <button id="confirmYes" class="modal-btn yes">Yes</button>
+            <button id="confirmNo" class="modal-btn no">No</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal-overlay">
+    <div class="modal-box">
+        <p id="successText"></p>
+        <button id="successOk" class="modal-btn yes">OK</button>
+    </div>
+</div>
+
+<script>
+   const params = new URLSearchParams(window.location.search);
+const businessId = params.get('id');
+const container = document.getElementById('businessDetailsContainer');
+
+async function loadBusinessDetails() {
+    try {
+        const response = await fetch(`http://localhost:3000/businesses`);
+        const data = await response.json();
+        const businesses = data.businesses;
+
+        const biz = businesses.find(b => b.id == businessId);
+        if (!biz) {
+            container.textContent = "Business not found.";
+            return;
+        }
+
+        container.innerHTML = `
+            <h2>${biz.name}</h2>
+            <p><strong>Location:</strong> ${biz.location}</p>
+            <p><strong>Working Days:</strong> ${biz.working_days}</p>
+            <p><strong>Waiting Time:</strong> ${biz.waiting_time} mins</p>
+            <p><strong>Queue Length:</strong> ${biz.queue_length}</p>
+            <p><strong>Category:</strong> ${biz.category}</p>
+            <p><strong>Description:</strong> ${biz.description}</p>
+
+            <div class="button-row">
+                <button class="btn small-btn" id="joinQueueBtn">Join Queue</button>
+                <div style="margin-top:10px;">
+                    <a href="customerdashboard.html">⬅ Back to Dashboard</a>
+                </div>
+            </div>
+        `;
+
+        /* -------- POPUPS HTML (added dynamically) -------- */
+        document.body.insertAdjacentHTML("beforeend", `
+            <div id="queueModal" class="modal-overlay">
+                <div class="modal-box">
+                    <p>Are you sure you want to join this queue?</p>
+                    <div class="modal-buttons">
+                        <button id="confirmYes" class="modal-btn yes">Yes</button>
+                        <button id="confirmNo" class="modal-btn no">No</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="successModal" class="modal-overlay">
+                <div class="modal-box">
+                    <p id="successText"></p>
+                    <button id="successOk" class="modal-btn yes">OK</button>
+                </div>
+            </div>
+        `);
+
+        const joinQueueBtn = document.getElementById("joinQueueBtn");
+
+        const storedTicket = localStorage.getItem(`ticket_business_${businessId}`);
+        const hasGlobalQueue = localStorage.getItem('globalQueue') === 'true';
+
+        if (storedTicket) {
+            joinQueueBtn.disabled = true;
+            joinQueueBtn.textContent = `Your Ticket: ${storedTicket}`;
+        } else if (hasGlobalQueue) {
+            joinQueueBtn.disabled = true;
+            joinQueueBtn.textContent = `Already in another queue`;
+        }
+
+        const modal = document.getElementById("queueModal");
+        const successModal = document.getElementById("successModal");
+        const yesBtn = document.getElementById("confirmYes");
+        const noBtn = document.getElementById("confirmNo");
+        const successText = document.getElementById("successText");
+        const successOk = document.getElementById("successOk");
+
+        joinQueueBtn.addEventListener("click", () => {
+            if (hasGlobalQueue) return;
+            modal.style.display = "flex";
+        });
+
+        noBtn.onclick = () => {
+            modal.style.display = "none";
+        };
+
+        yesBtn.onclick = () => {
+            modal.style.display = "none";
+
+            const ticketNumber = `A${biz.queue_length + 1}`;
+
+            localStorage.setItem(`ticket_business_${businessId}`, ticketNumber);
+            localStorage.setItem('globalQueue', 'true');
+
+            joinQueueBtn.disabled = true;
+            joinQueueBtn.textContent = `Your Ticket: ${ticketNumber}`;
+
+            successText.innerHTML = `
+                ✅ You have successfully joined the queue<br><br>
+                <strong>Ticket Number:</strong> ${ticketNumber}
+            `;
+
+            successModal.style.display = "flex";
+        };
+
+        successOk.onclick = () => {
+            successModal.style.display = "none";
+        };
+
+    } catch (err) {
+        console.error(err);
+        container.textContent = "Error loading business details.";
+    }
+}
+
+loadBusinessDetails();
+
+</script>
+</body>
+</html>
