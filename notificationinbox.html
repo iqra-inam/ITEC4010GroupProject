@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notification Inbox</title>
+    <link rel="stylesheet" href="istyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Stack+Sans+Headline:wght@200..700&family=Stack+Sans+Text:wght@200..700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+
+        <h1 class="app-title">Notification Inbox</h1><br>
+
+        <!-- TOP NAV -->
+        <div class="topnav">
+
+            <div class="nav-left">
+                <a href="customerdashboard.html">Home</a>
+                <a href="customerdashboardmyqueue.html">My Queue</a>
+                <a href="notificationinbox.html" class="active">Notification Inbox</a>
+            </div>
+
+            <div class="nav-right">
+                <select class="filter-dropdown" id="notifFilter">
+                    <option value="all">All</option>
+                    <option value="unread">Unread</option>
+                    <option value="read">Read</option>
+                </select>
+
+                <div class="account-icon">
+                    <a href="myaccount.html">👤</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- NOTIFICATION LIST -->
+        <div class="dashboard-container">
+
+            <h2 class="dashboard-title">Your Notifications</h2>
+
+            <div id="notificationList" class="notification-list">
+                <!-- Notifications will be injected here from DB -->
+            </div>
+
+            <!-- Hidden template to clone dynamically -->
+            <template id="notificationTemplate">
+                <div class="notification-card">
+                    <div class="notif-text">
+                        <h3 class="notif-title"></h3>
+                        <p class="notif-message"></p>
+                        <span class="notif-time"></span>
+                    </div>
+                    <button class="mark-read-btn">Mark as Read</button>
+                </div>
+            </template>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
