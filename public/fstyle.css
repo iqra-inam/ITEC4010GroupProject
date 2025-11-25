@@ -1,224 +1,199 @@
-/* Global layout */
+/* RESET + BASE */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
 }
 
 body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f5f5f5;
-    color: #333;
+    background: #fafafa;
 }
 
-/* Header title */
-.header {
-    text-align: center;
-    padding: 30px 0 10px;
-}
-
-.header h1 {
-    margin: 0;
-    font-size: 2.4rem;
-    font-weight: 500;
-}
-
-/* Teal background block */
-.dashboard-panel {
-    background: #3cc7c2;
-    border-radius: 40px;
-    padding: 60px 0 80px;
-    width: 85%;
-    margin: auto;
-}
-
-/* Main white card */
-.card {
-    background: #ffffff;
-    width: 70%;
-    margin: 0 auto;
-    padding: 60px 60px 50px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-.small-card {
-    width: 50%;
-}
-
-/* Image placeholders */
-.image-placeholder {
-    width: 150px;
-    height: 150px;
-    border-radius: 20px;
-    border: 3px solid #333;
-    margin-right: 30px;
-    position: relative;
-}
-
-.image-placeholder.large {
-    width: 200px;
-    height: 200px;
-}
-
-.image-placeholder::before,
-.image-placeholder::after {
-    content: "";
-    position: absolute;
-    border: 3px solid #333;
-}
-
-.image-placeholder::before {
-    width: 60%;
-    height: 55%;
-    bottom: 12%;
-    left: 10%;
-    border-top: none;
-    border-right: none;
-    transform: skewX(-10deg);
-}
-
-.image-placeholder::after {
-    width: 20%;
-    height: 20%;
-    border-radius: 50%;
-    top: 15%;
-    left: 60%;
-}
-
-/* Flex layouts */
-.account-layout,
-.business-layout {
+/* ================= NAV BAR ================= */
+.topnav {
+    width: 100%;
+    background: #25c2bf;
+    padding: 12px 20px;
     display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-bottom: 30px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.account-info,
-.business-info {
-    text-align: left;
-    font-size: 1rem;
+.nav-left,
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.more-info {
-    margin-top: 10px;
-    font-style: italic;
+.nav-left a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px;
 }
 
-/* Section titles */
-.section-title {
-    font-size: 1.4rem;
-    margin: 10px 0 15px;
+.nav-left a:hover {
+    background: rgba(255,255,255,0.2);
 }
 
-/* Buttons */
-.button-row {
-    margin-top: 30px;
+.nav-left .active {
+    background: rgba(0,0,0,0.15);
 }
 
-.button-row.center {
+.nav-search {
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+.filter-dropdown {
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.account-icon a {
+    font-size: 20px;
+    color: white;
+    background: rgba(255,255,255,0.2);
+    padding: 6px 10px;
+    border-radius: 50%;
+}
+
+/* ================= PAGE CONTAINER ================= */
+.page-wrapper {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px 35px;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+}
+
+.app-title {
     text-align: center;
+    margin: 20px 0 10px;
+}
+
+.dashboard-title {
+    text-align: center;
+    margin: 15px 0; /* top 25px, bottom 25px */
+}
+
+
+/* ================= ACCOUNT PAGE ================= */
+.account-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.account-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.account-image {
+    width: 130px;
+    height: 130px;
+    background: #eaeaea;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+}
+
+.account-info p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center; /* center buttons */
+    gap: 10px; /* space between buttons */
+    margin-top: 15px;
+}
+
+.button-row .btn {
+    padding: 12px 20px; /* slightly smaller for better fit */
+    border: none;
+    background: #ff6b6b;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.button-row .btn:hover {
+    background: #ff8989;
+}
+
+/* ================= QUEUE PAGE ================= */
+.wrapper {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 600px;
+    background: white; /* match account container */
+    padding: 30px;
+    border-radius: 14px;
+    text-align: left; /* same as account container for info alignment */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    color: #333;
+    font-family: 'Open Sans', sans-serif; /* ensure font matches */
+}
+
+.card h2 {
+    margin-bottom: 20px;
+    text-align: center; /* keep title centered */
+}
+
+.info p {
+    font-size: 16px;
+    margin: 8px 0;
+    color: #333; /* darker text for readability */
+}
+
+.info em {
+    color: #555;
+}
+
+/* Buttons remain the same as before */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .btn {
-    display: inline-block;
-    text-decoration: none;
-    background: #ff6f6f;
-    color: #fff;
-    padding: 12px 40px;
-    margin: 0 15px 10px;
-    border-radius: 40px;
-    font-size: 1rem;
+    padding: 12px 25px;
+    background: #ff6b6b;
+    color: white;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
-}
-
-.btn.wide {
-    min-width: 320px;
+    transition: background 0.2s ease;
 }
 
 .btn:hover {
-    background: #ff5a5a;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-    transform: translateY(-1px);
+    background: #ff8989;
 }
 
-/* Small top links on dashboard card */
-.top-links {
-    margin-top: 25px;
-    font-size: 0.9rem;
+/* OPTIONAL ACCOUNT & QUEUE SUPPORT */
+.dashboard-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
 }
-
-.top-links a {
-    color: #777;
-    text-decoration: none;
-}
-
-.top-links a:hover {
-    text-decoration: underline;
-}
-
-/* Responsive tweaks */
-@media (max-width: 900px) {
-    .card,
-    .small-card {
-        width: 90%;
-        padding: 40px 25px;
-    }
-
-    .account-layout,
-    .business-layout {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .image-placeholder,
-    .image-placeholder.large {
-        margin-right: 0;
-        margin-bottom: 20px;
-    }
-
-    .account-info,
-    .business-info {
-        text-align: center;
-    }
-
-    .btn.wide {
-        min-width: auto;
-        width: 100%;
-        max-width: 320px;
-    }
-}
-
-/* Popup overlay */
-.popup-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.45);
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-}
-
-/* Popup box */
-.popup-box {
-    background: white;
-    padding: 40px 50px;
-    border-radius: 20px;
-    text-align: center;
-    width: 350px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-
-.popup-box h2 {
-    margin-bottom: 15px;
-    font-size: 1.6rem;
-}
-

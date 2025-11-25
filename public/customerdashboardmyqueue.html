@@ -1,29 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Customer Dashboard: My Queue</title>
-    <link rel="stylesheet" href="fstyle.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Queue</title>
+<link rel="stylesheet" href="fstyle.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+    body.modal-open {
+        overflow: hidden;
+    }
+
+    /* LEAVE CONFIRM MODAL */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    .modal-box {
+        background: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        width: 320px;
+        max-width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .modal-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .modal-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    .modal-btn.yes { background: #2ecc71; color: white; }
+    .modal-btn.no { background: #e74c3c; color: white; }
+
+    /* SUCCESS POPUP */
+    .success-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2ecc71;
+    color: white;
+    padding: 20px 35px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 10000;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    }
+    .success-popup.show {
+        display: block;
+        opacity: 1;
+    }
+</style>
 </head>
 <body>
-    <header class="header">
-        <h1>Customer Dashboard: My Queue</h1>
-    </header>
 
-    <main class="dashboard-panel">
-        <section class="card small-card">
-            <h2 class="section-title">Queue Status</h2>
+<div class="page-wrapper">
 
-            <p><strong>Business Name:</strong> Example Clinic</p>
-            <p><strong>Ticket Number:</strong> A023</p>
-            <p><strong>Position:</strong> 3 people ahead of you</p>
+    <h1 class="app-title">Queue Management System</h1>
+
+    <!-- TOP NAV -->
+    <div class="topnav">
+        <div class="nav-left">
+            <a href="customerdashboard.html">Home</a>
+            <a href="customerdashboardmyqueue.html" class="active">My Queue</a>
+            <a href="notificationinbox.html">Notification Inbox</a>
+        </div>
+        <div class="nav-right">
+            <div class="account-icon">
+                <a href="customerdashboardmyaccount.html">👤</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUEUE CONTENT -->
+    <h2 class="dashboard-title">Queue Status</h2>
+
+    <div class="wrapper">
+        <div class="card" id="queueCard">
+            <div class="info">
+                <p><strong>Business Name:</strong></p>
+                <p><strong>Ticket Number:</strong></p>
+                <p><strong>Position:</strong></p>
+            </div>
+
+            <div class="info" style="margin-top: 20px; text-align:center;">
+                <p><em>Live Update:</em> <strong>3 people ahead of you</strong></p>
+            </div>
 
             <div class="button-row">
-                <a href="customerdashboard.html" class="btn">Cancel</a>
-                <button class="btn" id="leaveQueueBtn">Leave Queue</button>
+                <a class="btn" id="leaveBtn">Leave Queue</a>
             </div>
-        </section>
-    </main>
+        </div>
+    </div>
+
+</div>
+
+<!-- LEAVE CONFIRM MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+        <p>Are you sure you want to leave the queue?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn yes" id="confirmLeave">Yes</button>
+            <button class="modal-btn no" id="cancelLeave">No</button>
+        </div>
+    </div>
+</div>
+
+<!-- SUCCESS POPUP -->
+<div class="success-popup" id="successPopup">You have left the queue</div>
+
+<script>
+const leaveBtn = document.getElementById('leaveBtn');
+const modalOverlay = document.getElementById('modalOverlay');
+const confirmLeave = document.getElementById('confirmLeave');
+const cancelLeave = document.getElementById('cancelLeave');
+const queueCard = document.getElementById('queueCard');
+const successPopup = document.getElementById('successPopup');
+
+// Show modal when clicking leave
+leaveBtn.addEventListener('click', () => {
+    modalOverlay.style.display = 'flex';
+    document.body.classList.add('modal-open');
+});
+
+// Cancel button closes modal
+cancelLeave.addEventListener('click', () => {
+    modalOverlay.style.display = 'none';
+    document.body.classList.remove('modal-open');
+});
+
+// Yes button removes queue and shows success popup
+confirmLeave.addEventListener('click', () => {
+    queueCard.style.display = 'none'; 
+    modalOverlay.style.display = 'none';
+    document.body.classList.remove('modal-open');
+
+    // Show success popup
+    successPopup.classList.add('show');
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+        successPopup.classList.remove('show');
+    }, 3000);
+});
+</script>
+
 </body>
 </html>
-

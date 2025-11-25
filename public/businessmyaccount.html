@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <title>My Account</title>
     <link rel="stylesheet" href="fstyle.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-</head>
 </head>
 <body>
 <div class="page-wrapper">
@@ -15,21 +11,28 @@
     <h1 class="app-title">Queue Management System</h1><br>
 
     <!-- NAV BAR (same as dashboard) -->
-    <div class="topnav">
-        <div class="nav-left">
-            <a href="customerdashboard.html">Dashboard</a>
-            <a href="customerdashboardmyqueue.html">My Queue</a>
-            <a href="notificationinbox.html">Notification Inbox</a>
-        </div>
+   <div class="topnav">
 
-       <div class="nav-right">
-     <div class="account-icon">
-        <a href="customerdashboardmyaccount.html" class="active">👤</a>
+          <!-- LEFT NAV LINKS -->
+          <div class="nav-left">
+              <a href="businessoverview.html" class="active">Overview</a>
+              <a href="businessQueue.html">Queues</a>
+              <a href="businessManage.html">Manage Queues</a>
+              <a href="businessReports.html">Reports/Analytics</a>
+          </div>
+
+          <!-- RIGHT SIDE ICONS -->
+          <div class="nav-right">
+  <div class="account-dropdown">
+    <div class="account-icon">👤</div>
+
+    <div class="account-menu">
+      <a href="loginbusiness.html">Logout</a>
     </div>
-    </a>
+  </div>
 </div>
-
     </div>
+
 
     <br><h2 class="dashboard-title">My Account</h2>
 
@@ -49,6 +52,7 @@
             </div>
 
             <div class="button-row">
+                <a href="customerdashboard.html" class="btn">Cancel</a>
                 <a href="logincustomer.html" class="btn">Logout</a>
             </div>
 
