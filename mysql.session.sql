@@ -113,3 +113,21 @@ CREATE TABLE notifications (
 );
 
 SELECT * FROM notifications;
+
+DELETE FROM notifications;
+
+DROP TABLE IF EXISTS notifications;
+
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    message TEXT,
+    type VARCHAR(50),
+    is_read BOOLEAN DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+SHOW TABLES;
+
+
+SELECT * FROM users;

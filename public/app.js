@@ -61,6 +61,7 @@ if (loginForm) {
 
             if (data.success) {
                 window.location.href = "customerdashboard.html";
+                localStorage.setItem("userId", data.userId || null);
             } else {
                 message.textContent = data.message || "Incorrect email or password";
             }
@@ -156,7 +157,6 @@ async function loadBusinesses(filter = "") {
     }
 }
 
-
 // ---------------- FILTER DROPDOWN ----------------
 const filterDropdown = document.getElementById("filterDropdown");
 if (filterDropdown) {
@@ -165,9 +165,7 @@ if (filterDropdown) {
     });
 }
 
-
 // ---------------- AUTO LOAD ON PAGE OPEN ----------------
 window.addEventListener("DOMContentLoaded", () => {
     loadBusinesses(); 
 });
-

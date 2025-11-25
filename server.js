@@ -61,8 +61,7 @@ app.post('/login', (req, res) => {
     if (!match) {
       return res.json({ success: false, message: "Incorrect password" });
     }
-
-    res.json({ success: true, message: "Login successful" });
+    res.json({ success: true, message: "Login successful", userId: user.id});
   });
 });
 
