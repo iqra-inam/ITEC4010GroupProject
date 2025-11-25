@@ -2,33 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Customer Dashboard: My Queue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Queue</title>
     <link rel="stylesheet" href="fstyle.css">
 </head>
 <body>
-    <header class="header">
-        <h1>Customer Dashboard: My Queue</h1>
-    </header>
 
-    <main class="dashboard-panel">
-        <section class="card small-card">
-            <h2 class="section-title">Queue Status</h2>
+    <!-- Header -->
+    <div class="header">
+        Customer Dashboard: My Queue
+    </div>
 
-            <p><strong>Business Name:</strong> Example Clinic </p>
-            <p><strong>Ticket Number:</strong> A023 </p>
-            <p><strong>Position:</strong> 3 people ahead of you </p>
+    <!-- Wrapper (Turquoise Area) -->
+    <div class="wrapper">
 
-            <div class="button-row">
-                <a href="customerdashboard.html" class="btn">Cancel</a>
-<<<<<<< HEAD:customerdashboardmyqueue.html
-                <a href="joinqueueconfirmation.html" class="btn">Leave Queue</a>
-=======
-                <button class="btn" id="leaveQueueBtn">Leave Queue</button>
->>>>>>> main:public/customerdashboardmyqueue.html
+        <!-- White Card -->
+        <div class="card">
+
+            <h2>Queue Status</h2>
+
+            <div class="info">
+                <p><strong>Business Name:</strong></p>
+                <p><strong>Ticker Number:</strong></p>
+                <p><strong>Position:</strong></p>
             </div>
-        </section>
-    </main>
+
+            <div class="info" style="margin-top: 20px; text-align:center;">
+                <p><em>Live Update:</em> <strong>3 people ahead of you</strong></p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="buttons">
+                <button class="btn">Cancel</button>
+                <button class="btn">Leave Queue</button>
+            </div>
+
+        </div>
+    </div>
+
 </body>
 </html>
+
+
 
 
