@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Business Dashboard – Manage Queues</title>
+  <link rel="stylesheet" href="mstyle.css">
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+
+    <h1 class="app-title">Business Dashboard: Manage Queues</h1><br>
+
+    <!-- TOP NAV (same style as customer dashboard) -->
+    <div class="topnav">
+
+      <!-- LEFT NAV -->
+      <div class="nav-left">
+        <a href="businessoverview.html">Overview</a>
+        <a href="businessQueue.html">Queues</a>
+        <a href="businessManage.html" class="active">Manage Queues</a>
+        <a href="businessReports.html">Reports/Analytics</a>
+
+      </div>
+
+      <!-- RIGHT NAV -->
+      <div class="nav-right">
+
+        <div class="account-icon">
+          <a href="businessaccount.html">👤</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="dashboard-container">
+
+      <h2 class="dashboard-title">Manage Active Queue</h2>
+
+      <div class="manage-table-wrapper">
+        <table class="manage-table">
+          <thead>
+            <tr>
+              <th>Ticket</th>
+              <th>Customer Name</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>A01</td>
+              <td>John Doe</td>
+              <td>
+                <select class="status-select">
+                  <option>Served</option>
+                  <option>Waiting</option>
+                  <option>Skipped</option>
+                  <option>No Show</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>A02</td>
+              <td></td>
+              <td>
+                <select class="status-select">
+                  <option>Waiting</option>
+                  <option>Served</option>
+                  <option>Skipped</option>
+                  <option>No Show</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                <select class="status-select">
+                  <option>Waiting</option>
+                  <option>Served</option>
+                  <option>Skipped</option>
+                  <option>No Show</option>
+                </select>
+              </td>
+              <td></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</body>
+</html>
