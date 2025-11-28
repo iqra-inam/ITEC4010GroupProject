@@ -24,20 +24,19 @@
       </div>
 
       <div class="nav-right">
-  <div class="account-dropdown">
-    <div class="account-icon">👤</div>
-
-    <div class="account-menu">
-      <a href="loginbusiness.html">Logout</a>
-    </div>
-  </div>
-</div>
+        <div class="account-dropdown">
+          <div class="account-icon">👤</div>
+          <div class="account-menu">
+            <a href="loginbusiness.html">Logout</a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- MAIN CONTENT -->
     <div class="dashboard-container">
 
-      <h2 class="dashboard-title">Manage Active Queue</h2>
+      <h2 class="dashboard-title" id="manageTitle">Manage Active Queue</h2>
 
       <!-- 3 CARD LAYOUT -->
       <div class="manage-queue-cards">
@@ -45,28 +44,27 @@
         <!-- ADD QUEUE -->
         <div class="queue-card">
           <div class="queue-card-content">
-            
             <div class="big-plus">+</div>
           </div>
-          <a href="businessaddqueue.html">
+          <a href="Businessaddqueue.html">
             <button class="queue-btn add-btn">Add Queue</button>
           </a>
         </div>
 
         <!-- LIST OF QUEUES -->
         <div class="queue-card">
-          <div class="queue-card-content">
-            <p>have a list of queues, scroll down option</p>
+          <div class="queue-card-content" id="queueListCard">
+            <p>Select a business queue from Overview or Queues pages.</p>
           </div>
-          <button class="queue-btn delete-btn">Delete Queue</button>
+          <button class="queue-btn delete-btn" id="deleteQueueBtn">Delete Queue</button>
         </div>
 
         <!-- EDIT QUEUE -->
         <div class="queue-card">
           <div class="queue-card-content">
-            <p>edit queue should lead to the manage queue page</p>
+            <p>Update queue status for each ticket.</p>
           </div>
-          <button class="queue-btn edit-btn">Edit Queue</button>
+          <button class="queue-btn edit-btn" id="editQueueBtn">Edit Queue</button>
         </div>
 
       </div>
@@ -77,55 +75,14 @@
           <thead>
             <tr>
               <th>Ticket</th>
-              <th>Customer Name</th>
-              <th>Status</th>
+              <th>User ID</th>
+              <th>Status (local only)</th>
               <th></th>
             </tr>
           </thead>
 
-          <tbody>
-            <tr>
-              <td>A01</td>
-              <td>John Doe</td>
-              <td>
-                <select class="status-select">
-                  <option>Served</option>
-                  <option>Waiting</option>
-                  <option>Skipped</option>
-                  <option>No Show</option>
-                </select>
-              </td>
-              <td></td>
-            </tr>
-
-            <tr>
-              <td>A02</td>
-              <td></td>
-              <td>
-                <select class="status-select">
-                  <option>Waiting</option>
-                  <option>Served</option>
-                  <option>Skipped</option>
-                  <option>No Show</option>
-                </select>
-              </td>
-              <td></td>
-            </tr>
-
-            <tr>
-              <td></td>
-              <td></td>
-              <td>
-                <select class="status-select">
-                  <option>Waiting</option>
-                  <option>Served</option>
-                  <option>Skipped</option>
-                  <option>No Show</option>
-                </select>
-              </td>
-              <td></td>
-            </tr>
-
+          <tbody id="activeQueueBody">
+            <!-- Filled dynamically -->
           </tbody>
         </table>
       </div>
@@ -133,5 +90,105 @@
     </div>
 
   </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    let businessId = params.get("businessId") || null;
+
+    async function loadManagePage() {
+      const titleEl = document.getElementById("manageTitle");
+      const tbody = document.getElementById("activeQueueBody");
+
+      tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+
+      try {
+        // Load all businesses first to find the one we're managing
+        const bizRes = await fetch("http://localhost:3000/businesses");
+        const bizData = await bizRes.json();
+
+        if (!bizData.success) {
+          tbody.innerHTML = "<tr><td colspan='4'>Could not load businesses.</td></tr>";
+          return;
+        }
+
+        const businesses = bizData.businesses || [];
+
+        if (!businesses.length) {
+          titleEl.textContent = "Manage Active Queue – No businesses found";
+          tbody.innerHTML = "<tr><td colspan='4'>No data.</td></tr>";
+          return;
+        }
+
+        let current = null;
+        if (businessId) {
+          current = businesses.find(b => String(b.id) === String(businessId));
+        }
+        if (!current) {
+          current = businesses[0];
+          businessId = current.id;
+        }
+
+        titleEl.textContent = `Manage Active Queue – ${current.name}`;
+
+        // Now load the queue for this business
+        const queueRes = await fetch(`http://localhost:3000/business-queue/${businessId}`);
+        const queueData = await queueRes.json();
+
+        if (!queueData.success) {
+          tbody.innerHTML = "<tr><td colspan='4'>Could not load queue.</td></tr>";
+          return;
+        }
+
+        const queue = queueData.queue || [];
+
+        if (!queue.length) {
+          tbody.innerHTML = "<tr><td colspan='4'>No one in the queue yet.</td></tr>";
+          return;
+        }
+
+        tbody.innerHTML = "";
+
+        queue.forEach(entry => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${entry.ticket_number}</td>
+            <td>${entry.user_id}</td>
+            <td>
+              <select class="status-select">
+                <option>Waiting</option>
+                <option>Served</option>
+                <option>Skipped</option>
+                <option>No Show</option>
+              </select>
+            </td>
+            <td></td>
+          `;
+
+          // Currently this status is only local (no backend update)
+          tr.querySelector(".status-select").addEventListener("change", () => {
+            // You can hook a PUT endpoint here later if you want
+          });
+
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("activeQueueBody").innerHTML =
+          "<tr><td colspan='4'>Error loading queue.</td></tr>";
+      }
+    }
+
+    document.getElementById("deleteQueueBtn").addEventListener("click", () => {
+      alert("If you want, we can wire this to a DELETE /businesses/:id endpoint.");
+    });
+
+    document.getElementById("editQueueBtn").addEventListener("click", () => {
+      alert("Right now status changes are local only. Add a backend endpoint to save them if needed.");
+    });
+
+    loadManagePage();
+  </script>
+
 </body>
 </html>

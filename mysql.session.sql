@@ -47,7 +47,9 @@ CREATE TABLE employees (
 INSERT INTO employees (employee_id, full_name, role, password) VALUES
 ('EMP001', 'Sarah John', 'Receptionist', '12345'),
 ('EMP002', 'Michael Brown', 'Manager', '09876'),
-('EMP003', 'Mark Adam', 'Admin', '11111');
+('EMP003', 'Mark Adam', 'Admin', '11111'),
+('mustafa', 'mustafa Salman', 'test','mustafa123');
+
 
 SHOW TABLES;
 

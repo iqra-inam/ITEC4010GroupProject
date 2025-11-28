@@ -25,43 +25,42 @@
 
       <!-- RIGHT NAV -->
       <div class="nav-right">
-  <div class="account-dropdown">
-    <div class="account-icon">👤</div>
+        <div class="account-dropdown">
+          <div class="account-icon">👤</div>
+          <div class="account-menu">
+            <a href="loginbusiness.html">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <div class="account-menu">
-      <a href="loginbusiness.html">Logout</a>
-    </div>
-  </div>
-</div>
-    </div>
     <!-- MAIN CONTENT -->
     <div class="dashboard-container">
 
       <!-- White form card -->
       <div class="add-form-card">
 
-        <form class="add-queue-form">
+        <form class="add-queue-form" id="addQueueForm">
 
           <label>Queue Name</label>
-          <input type="text" placeholder="Name of the queue">
+          <input id="queueName" type="text" placeholder="Name of the queue" required>
 
           <label>Type</label>
-          <input type="text" placeholder="Office, clinic, retail, etc.">
+          <input id="queueType" type="text" placeholder="Office, clinic, retail, etc.">
 
           <label>Date</label>
-          <input type="date">
+          <input id="queueDate" type="date">
 
           <label>Location</label>
-          <input type="text" placeholder="Address or description">
+          <input id="queueLocation" type="text" placeholder="Address or description" required>
 
           <label>Access</label>
-          <input type="text" placeholder="Public, restricted, etc.">
+          <input id="queueAccess" type="text" placeholder="Public, restricted, etc.">
 
           <label>Capacity</label>
-          <input type="number" placeholder="Max people allowed">
+          <input id="queueCapacity" type="number" placeholder="Max people allowed">
 
           <button type="submit" class="queue-btn add-btn big-submit-btn">Add</button>
-          
 
         </form>
 
@@ -70,6 +69,50 @@
     </div>
 
   </div>
+
+  <script>
+    const form = document.getElementById("addQueueForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        name: document.getElementById("queueName").value.trim(),
+        type: document.getElementById("queueType").value.trim(),
+        date: document.getElementById("queueDate").value,
+        location: document.getElementById("queueLocation").value.trim(),
+        access: document.getElementById("queueAccess").value.trim(),
+        capacity: document.getElementById("queueCapacity").value
+      };
+
+      if (!payload.name || !payload.location) {
+        alert("Please fill in at least name and location.");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:3000/businesses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+          alert(data.message || "Could not add queue");
+          return;
+        }
+
+        alert("Queue added successfully");
+        form.reset();
+        window.location.href = "businessQueue.html";
+      } catch (err) {
+        console.error(err);
+        alert("Error adding queue");
+      }
+    });
+  </script>
 
 </body>
 </html>
