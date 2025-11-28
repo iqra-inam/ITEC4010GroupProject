@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <title>Business Dashboard – Queues</title>
   <link rel="stylesheet" href="mstyle.css">
+</head>
 
 <body>
 
@@ -25,15 +26,15 @@
 
           <!-- RIGHT NAV -->
           <div class="nav-right">
-  <div class="account-dropdown">
-    <div class="account-icon">👤</div>
+            <div class="account-dropdown">
+              <div class="account-icon">👤</div>
+              <div class="account-menu">
+                <a href="loginbusiness.html">Logout</a>
+              </div>
+            </div>
+          </div>
+      </div>
 
-    <div class="account-menu">
-      <a href="loginbusiness.html">Logout</a>
-    </div>
-  </div>
-</div>
-    </div>
       <!-- MAIN CONTENT -->
       <div class="dashboard-container">
 
@@ -50,36 +51,8 @@
                       </tr>
                   </thead>
 
-                  <tbody>
-
-                      <!-- Database rows will fill these -->
-                      <tr>
-                          <td class="queue-name"></td>
-                          <td class="queue-length"></td>
-                          <td class="queue-wait"></td>
-                          <td>
-                              <button class="view-btn">View</button>
-                          </td>
-                      </tr>
-
-                      <tr>
-                          <td class="queue-name"></td>
-                          <td class="queue-length"></td>
-                          <td class="queue-wait"></td>
-                          <td>
-                              <button class="view-btn">View</button>
-                          </td>
-                      </tr>
-
-                      <tr>
-                          <td class="queue-name"></td>
-                          <td class="queue-length"></td>
-                          <td class="queue-wait"></td>
-                          <td>
-                              <button class="view-btn">View</button>
-                          </td>
-                      </tr>
-
+                  <tbody id="queueTableBody">
+                      <!-- Filled dynamically -->
                   </tbody>
               </table>
           </div>
@@ -87,6 +60,56 @@
       </div>
 
   </div>
+
+  <script>
+    async function loadQueues() {
+      const tbody = document.getElementById("queueTableBody");
+      tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+
+      try {
+        const res = await fetch("http://localhost:3000/businesses");
+        const data = await res.json();
+
+        if (!data.success) {
+          tbody.innerHTML = "<tr><td colspan='4'>Could not load queues.</td></tr>";
+          return;
+        }
+
+        const businesses = data.businesses || [];
+
+        if (!businesses.length) {
+          tbody.innerHTML = "<tr><td colspan='4'>No queues found.</td></tr>";
+          return;
+        }
+
+        tbody.innerHTML = "";
+
+        businesses.forEach(biz => {
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td>${biz.name}</td>
+            <td>${biz.queue_length ?? 0}</td>
+            <td>${biz.waiting_time ?? 0} mins</td>
+            <td>
+              <button class="view-btn">Manage</button>
+            </td>
+          `;
+
+          tr.querySelector(".view-btn").addEventListener("click", () => {
+            window.location.href = `businessManage.html?businessId=${biz.id}`;
+          });
+
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error(err);
+        tbody.innerHTML = "<tr><td colspan='4'>Error loading queues.</td></tr>";
+      }
+    }
+
+    loadQueues();
+  </script>
 
 </body>
 </html>
