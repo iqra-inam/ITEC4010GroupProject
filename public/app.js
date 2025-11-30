@@ -61,7 +61,7 @@ if (loginForm) {
 
             if (data.success) {
                 window.location.href = "customerdashboard.html";
-                localStorage.setItem("userId", data.userId || null);
+                localStorage.setItem("userId", data.userId);
             } else {
                 message.textContent = data.message || "Incorrect email or password";
             }
@@ -70,6 +70,16 @@ if (loginForm) {
             message.textContent = "Server error. Please try again later.";
         }
     });
+}
+
+// ---------------- LOGOUT ----------------
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("userId");
+    localStorage.clear();
+    window.location.href = "logincustomer.html";
+  });
 }
 
 // ---------------- EMPLOYEE LOGIN ----------------

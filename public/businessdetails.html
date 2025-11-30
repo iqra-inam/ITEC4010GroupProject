@@ -205,24 +205,43 @@ async function loadBusinessDetails() {
             modal.style.display = "none";
         };
 
-        yesBtn.onclick = () => {
-            modal.style.display = "none";
+        yesBtn.onclick = async () => {
+    modal.style.display = "none";
 
-            const ticketNumber = `A${biz.queue_length + 1}`;
+    // Generate ticket number in frontend
+    const ticketNumber = `A${biz.queue_length + 1}`;
 
-            localStorage.setItem(`ticket_business_${businessId}`, ticketNumber);
-            localStorage.setItem('globalQueue', 'true');
+    const USER_ID = localStorage.getItem("userId"); // however you're currently storing it in JS (NOT localStorage)
 
-            joinQueueBtn.disabled = true;
-            joinQueueBtn.textContent = `Your Ticket: ${ticketNumber}`;
+    // Send join request to backend
+    const res = await fetch('http://localhost:3000/join-queue', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            userId: USER_ID,
+            businessId,
+            ticketNumber
+        })
+    });
 
-            successText.innerHTML = `
-                ✅ You have successfully joined the queue<br><br>
-                <strong>Ticket Number:</strong> ${ticketNumber}
-            `;
+    const data = await res.json();
 
-            successModal.style.display = "flex";
-        };
+    if (!data.success) {
+        alert(data.message);
+        return;
+    }
+
+    // Update UI only — no storage
+    joinQueueBtn.disabled = true;
+    joinQueueBtn.textContent = `Your Ticket: ${ticketNumber}`;
+
+    successText.innerHTML = `
+        ✅ You have successfully joined the queue<br><br>
+        <strong>Ticket Number:</strong> ${ticketNumber}
+    `;
+
+    successModal.style.display = "flex";
+};
 
         successOk.onclick = () => {
             successModal.style.display = "none";

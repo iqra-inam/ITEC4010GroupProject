@@ -9,78 +9,34 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-    body.modal-open {
-        overflow: hidden;
-    }
+    body.modal-open { overflow: hidden; }
+
+    /* QUEUE CARD */
+    .wrapper { display: flex; justify-content: center; margin-top: 30px; }
+    .card { background: #fafafa; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 400px; width: 90%; }
+    .info p { margin: 5px 0; }
+    .button-row { margin-top: 15px; display: flex; justify-content: center; }
+    .btn { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; background: #ff6b6b; color: white; font-weight: 600; }
+    .btn:hover { background: #ff8989; }
 
     /* LEAVE CONFIRM MODAL */
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.6);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    }
-    .modal-box {
-        background: white;
-        padding: 25px 30px;
-        border-radius: 12px;
-        width: 320px;
-        max-width: 90%;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-    .modal-buttons {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        margin-top: 20px;
-    }
-    .modal-btn {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 9999; }
+    .modal-box { background: white; padding: 25px 30px; border-radius: 12px; width: 320px; max-width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-btn { flex: 1; padding: 10px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
     .modal-btn.yes { background: #2ecc71; color: white; }
     .modal-btn.no { background: #e74c3c; color: white; }
 
     /* SUCCESS POPUP */
-    .success-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #2ecc71;
-    color: white;
-    padding: 20px 35px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    display: none;
-    z-index: 10000;
-    font-weight: 600;
-    font-family: 'Open Sans', sans-serif;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    }
-    .success-popup.show {
-        display: block;
-        opacity: 1;
-    }
+    .success-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #2ecc71; color: white; padding: 20px 35px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; z-index: 10000; font-weight: 600; font-family: 'Open Sans', sans-serif; text-align: center; opacity: 0; transition: opacity 0.4s ease; }
+    .success-popup.show { display: block; opacity: 1; }
 </style>
 </head>
 <body>
 
 <div class="page-wrapper">
-
     <h1 class="app-title">Queue Management System</h1>
 
-    <!-- TOP NAV -->
     <div class="topnav">
         <div class="nav-left">
             <a href="customerdashboard.html">Home</a>
@@ -88,33 +44,17 @@
             <a href="notificationinbox.html">Notification Inbox</a>
         </div>
         <div class="nav-right">
-            <div class="account-icon">
-                <a href="customerdashboardmyaccount.html">👤</a>
-            </div>
+            <div class="account-icon"><a href="customerdashboardmyaccount.html">👤</a></div>
         </div>
     </div>
 
-    <!-- QUEUE CONTENT -->
     <h2 class="dashboard-title">Queue Status</h2>
 
     <div class="wrapper">
         <div class="card" id="queueCard">
-            <div class="info">
-                <p><strong>Business Name:</strong></p>
-                <p><strong>Ticket Number:</strong></p>
-                <p><strong>Position:</strong></p>
-            </div>
-
-            <div class="info" style="margin-top: 20px; text-align:center;">
-                <p><em>Live Update:</em> <strong>3 people ahead of you</strong></p>
-            </div>
-
-            <div class="button-row">
-                <a class="btn" id="leaveBtn">Leave Queue</a>
-            </div>
+            <p>Loading queue...</p>
         </div>
     </div>
-
 </div>
 
 <!-- LEAVE CONFIRM MODAL -->
@@ -131,40 +71,189 @@
 <!-- SUCCESS POPUP -->
 <div class="success-popup" id="successPopup">You have left the queue</div>
 
+<!-- <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const queueCard = document.getElementById('queueCard');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const confirmLeave = document.getElementById('confirmLeave');
+    const cancelLeave = document.getElementById('cancelLeave');
+    const successPopup = document.getElementById('successPopup');
+    });
+
+    const USER_ID = localStorage.getItem("userId");
+
+async function loadUserQueue() {
+    const queueCard = document.getElementById('queueCard');
+
+    if (!USER_ID) {
+        console.error("No user ID found in localStorage");
+        queueCard.innerHTML = "<p>User not logged in.</p>";
+        return;
+    }
+
+    try {
+        const response = await fetch("http://localhost:3000/get-queue-info", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userId: USER_ID })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.results.length > 0) {
+            const queueInfo = data.results[0]; // Assuming 1 queue entry per user
+            const ticketNumStr = queueInfo.ticket_number;       // e.g., "A10"
+            const numericPart = parseInt(ticketNumStr.substring(1), 10);  // "10" → 10
+            const userQueue = {
+                businessName: queueInfo.business_name,
+                ticketNumber: queueInfo.ticket_number,
+                positionAhead: numericPart - 1
+            };
+            
+            console.log("User Queue:", userQueue);
+
+            // ✅ Update the card HTML
+            queueCard.innerHTML = `
+                <div class="info">
+                    <p><strong>Business:</strong> ${userQueue.businessName}</p>
+                    <p><strong>Ticket Number:</strong> ${userQueue.ticketNumber}</p>
+                    <p><strong>Position Ahead:</strong> ${userQueue.positionAhead}</p>
+                </div>
+                <div class="button-row">
+                    <button class="btn" onclick="showLeaveModal()">Leave Queue</button>
+                </div>
+            `;
+        } else {
+            queueCard.innerHTML = "<p>You are not in any queue yet.</p>";
+            console.log("User is not in any queue yet.");
+        }
+
+    } catch (err) {
+        console.error("Error fetching queue info:", err);
+        queueCard.innerHTML = "<p>Error loading queue info.</p>";
+    }
+}
+
+loadUserQueue();
+
+</script> -->
+
 <script>
-const leaveBtn = document.getElementById('leaveBtn');
+let userQueue = null; // global
+const USER_ID = localStorage.getItem("userId");
+const queueCard = document.getElementById('queueCard');
 const modalOverlay = document.getElementById('modalOverlay');
 const confirmLeave = document.getElementById('confirmLeave');
 const cancelLeave = document.getElementById('cancelLeave');
-const queueCard = document.getElementById('queueCard');
 const successPopup = document.getElementById('successPopup');
 
-// Show modal when clicking leave
-leaveBtn.addEventListener('click', () => {
+// Show modal
+function showLeaveModal() {
     modalOverlay.style.display = 'flex';
     document.body.classList.add('modal-open');
-});
+}
 
-// Cancel button closes modal
-cancelLeave.addEventListener('click', () => {
+// Hide modal
+function hideLeaveModal() {
     modalOverlay.style.display = 'none';
     document.body.classList.remove('modal-open');
+}
+
+// Cancel leave
+cancelLeave.addEventListener('click', hideLeaveModal);
+
+// Confirm leave
+confirmLeave.addEventListener('click', async () => {
+    if (!userQueue) {
+        alert("No queue info available");
+        hideLeaveModal();
+        return;
+    }
+
+    try {
+        const response = await fetch("http://localhost:3000/leave-queue", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: USER_ID,
+                businessId: userQueue.businessId
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            hideLeaveModal();
+            queueCard.innerHTML = "<p>You are not in any queue.</p>";
+            userQueue = null;
+            successPopup.classList.add('show');
+            setTimeout(() => successPopup.classList.remove('show'), 2000);
+        } else {
+            alert("Error leaving queue: " + data.message);
+        }
+    } catch (err) {
+        console.error("Error leaving queue:", err);
+        alert("Error leaving queue");
+    }
 });
 
-// Yes button removes queue and shows success popup
-confirmLeave.addEventListener('click', () => {
-    queueCard.style.display = 'none'; 
-    modalOverlay.style.display = 'none';
-    document.body.classList.remove('modal-open');
+// Load user queue
+async function loadUserQueue() {
+    if (!USER_ID) {
+        console.error("No user ID found in localStorage");
+        queueCard.innerHTML = "<p>User not logged in.</p>";
+        return;
+    }
 
-    // Show success popup
-    successPopup.classList.add('show');
+    try {
+        const response = await fetch("http://localhost:3000/get-queue-info", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: USER_ID })
+        });
 
-    // Hide after 3 seconds
-    setTimeout(() => {
-        successPopup.classList.remove('show');
-    }, 3000);
-});
+        const data = await response.json();
+
+        if (data.success && data.results.length > 0) {
+            const queueInfo = data.results[0];
+            const numericPart = parseInt(queueInfo.ticket_number.substring(1), 10);
+
+            // store globally
+            userQueue = {
+                businessId: queueInfo.business_id, // must come from backend
+                businessName: queueInfo.business_name,
+                ticketNumber: queueInfo.ticket_number,
+                positionAhead: numericPart - 1
+            };
+
+            queueCard.innerHTML = `
+                <div class="info">
+                    <p><strong>Business:</strong> ${userQueue.businessName}</p>
+                    <p><strong>Ticket Number:</strong> ${userQueue.ticketNumber}</p>
+                    <p><strong>Position Ahead:</strong> ${userQueue.positionAhead}</p>
+                </div>
+                <div class="button-row">
+                    <button class="btn" id="leaveBtn">Leave Queue</button>
+                </div>
+            `;
+
+            // attach modal to the newly created button
+            document.getElementById('leaveBtn').addEventListener('click', showLeaveModal);
+
+        } else {
+            queueCard.innerHTML = "<p>You are not in any queue yet.</p>";
+        }
+
+    } catch (err) {
+        console.error("Error fetching queue info:", err);
+        queueCard.innerHTML = "<p>Error loading queue info.</p>";
+    }
+}
+
+// initial load
+loadUserQueue();
 </script>
 
 </body>

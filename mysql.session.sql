@@ -129,5 +129,9 @@ CREATE TABLE notifications (
 
 SHOW TABLES;
 
+DELETE FROM queue;
+SELECT * FROM queue;
 
-SELECT * FROM users;
+SELECT * FROM notifications WHERE user_id = 28;
+
+SELECT * FROM notifications;

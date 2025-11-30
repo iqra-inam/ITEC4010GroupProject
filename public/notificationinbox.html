@@ -1,106 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Notification Inbox</title>
-    <link rel="stylesheet" href="istyle.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Stack+Sans+Headline:wght@200..700&family=Stack+Sans+Text:wght@200..700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Notification Inbox</title>
+<link rel="stylesheet" href="istyle.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+.notification-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.notification-card { background: #fafafa; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+.notif-text { max-width: 80%; }
+.notif-title { margin: 0; font-weight: 600; }
+.notif-message { margin: 5px 0; }
+.notif-time { font-size: 0.85rem; color: #666; }
+.mark-read-btn { padding: 5px 10px; border: none; border-radius: 5px; background: #2ecc71; color: white; cursor: pointer; font-weight: 600; }
+.mark-read-btn:hover { background: #27ae60; }
+</style>
 </head>
-
 <body>
+<div class="page-wrapper">
+    <h1 class="app-title">Notification Inbox</h1><br>
 
-    <div class="page-wrapper">
-
-        <h1 class="app-title">Notification Inbox</h1><br>
-
-        <!-- TOP NAV -->
-        <div class="topnav">
-
-            <div class="nav-left">
-                <a href="customerdashboard.html">Home</a>
-                <a href="customerdashboardmyqueue.html">My Queue</a>
-                <a href="notificationinbox.html" class="active">Notification Inbox</a>
-            </div>
-
-            <div class="nav-right">
-                <select class="filter-dropdown" id="notifFilter">
-                    <option value="all">All</option>
-                    <option value="unread">Unread</option>
-                    <option value="read">Read</option>
-                </select>
-
-                <div class="account-icon">
-                    <a href="customerdashboardmyaccount.html">👤</a>
-                </div>
-            </div>
-
+    <div class="topnav">
+        <div class="nav-left">
+            <a href="customerdashboard.html">Home</a>
+            <a href="customerdashboardmyqueue.html">My Queue</a>
+            <a href="notificationinbox.html" class="active">Notification Inbox</a>
         </div>
-
-        <!-- NOTIFICATION LIST -->
-        <div class="dashboard-container">
-
-            <h2 class="dashboard-title">Your Notifications</h2>
-
-            <div id="notificationList" class="notification-list">
-                <!-- Notifications will be injected here from DB -->
-            </div>
-
-            <template id="notificationTemplate">
-                <div class="notification-card">
-                    <div class="notif-text">
-                        <h3 class="notif-title"></h3>
-                        <p class="notif-message"></p>
-                        <span class="notif-time"></span>
-                    </div>
-                    <button class="mark-read-btn">Mark as Read</button>
-                </div>
-            </template>
-
+        <div class="nav-right">
+            <select class="filter-dropdown" id="notifFilter">
+                <option value="all">All</option>
+                <option value="unread">Unread</option>
+                <option value="read">Read</option>
+            </select>
+            <div class="account-icon"><a href="customerdashboardmyaccount.html">👤</a></div>
         </div>
-
     </div>
 
-    <script>
-window.addEventListener("DOMContentLoaded", async () => {
-    const USER_ID = localStorage.getItem("userId");
-    console.log(USER_ID);
-    const container = document.getElementById("notificationList");
+    <div class="dashboard-container">
+        <h2 class="dashboard-title">Your Notifications</h2>
+        <div id="notificationList" class="notification-list"></div>
+        <template id="notificationTemplate">
+            <div class="notification-card">
+                <div class="notif-text">
+                    <h3 class="notif-title"></h3>
+                    <p class="notif-message"></p>
+                    <span class="notif-time"></span>
+                </div>
+                <button class="mark-read-btn">Mark as Read</button>
+            </div>
+        </template>
+    </div>
+</div>
 
+<script>
+const USER_ID = localStorage.getItem("userId");
+const container = document.getElementById("notificationList");
+const template = document.getElementById("notificationTemplate");
+const filterDropdown = document.getElementById("notifFilter");
+
+let allNotifications = [];
+
+// Load notifications from server
+async function loadNotifications() {
+
+    const USER_ID = localStorage.getItem("userId");
     if (!USER_ID) {
-        container.innerHTML = "<p>Please log in again.</p>";
+        console.error("No user ID found");
         return;
     }
 
     try {
         const res = await fetch(`http://localhost:3000/notifications/${USER_ID}`);
-        const notifications = await res.json();
 
-        container.innerHTML = "";
-
-        if (!notifications.length) {
-            container.innerHTML = "<p>No notifications yet.</p>";
+        if (!res.ok) {
+            console.log("Server returned error", res.status);
             return;
         }
 
-        notifications.forEach(n => {
-            const div = document.createElement("div");
-            div.className = "notification-item";
-            div.innerHTML = `
-                <h4>${n.title}</h4>
-                <p>${n.message}</p>
-                <small>${new Date(n.created_at).toLocaleString()}</small>
-            `;
-            container.appendChild(div);
-        });
-    } catch (err) {
-        container.innerHTML = "<p>Error loading notifications.</p>";
-        console.error(err);
-    }
-});
-</script>
+        const data = await res.json();
+        console.log("Notifications loaded:", data);
 
+    } catch (err) {
+        console.error("Error loading notifications:", err);
+    }
+}
+
+// Render notifications based on filter
+function renderNotifications() {
+    const filter = filterDropdown.value;
+    container.innerHTML = "";
+
+    const filtered = allNotifications.filter(n => {
+        if (filter === "all") return true;
+        if (filter === "unread") return !n.read;
+        if (filter === "read") return n.read;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = "<p>No notifications.</p>";
+        return;
+    }
+
+    filtered.forEach(n => {
+        const notif = template.content.cloneNode(true);
+        notif.querySelector(".notif-title").textContent = n.type || "Notification";
+        notif.querySelector(".notif-message").textContent = n.message;
+        notif.querySelector(".notif-time").textContent = new Date(n.created_at).toLocaleString();
+
+        const btn = notif.querySelector(".mark-read-btn");
+        if (n.read) btn.style.display = "none";
+
+        btn.addEventListener("click", async () => {
+            try {
+                await fetch("http://localhost:3000/notifications/mark-read", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: USER_ID, notificationId: n.id })
+                });
+                n.read = true;
+                renderNotifications();
+            } catch (err) {
+                console.error("Failed to mark as read:", err);
+            }
+        });
+
+        container.appendChild(notif);
+    });
+}
+
+filterDropdown.addEventListener("change", renderNotifications);
+window.addEventListener("DOMContentLoaded", loadNotifications);
+</script>
 
 </body>
 </html>

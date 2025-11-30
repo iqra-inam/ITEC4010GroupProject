@@ -101,48 +101,62 @@ app.get('/businesses', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`✅ Server running on http://localhost:${PORT}`);
+// });
 
 // POST /join-queue
 app.post('/join-queue', (req, res) => {
-    const { userId, businessId } = req.body;
+    const { userId, businessId, ticketNumber } = req.body;
 
-    if (!userId || !businessId) {
-        return res.json({ success: false, message: "Missing userId or businessId" });
+    if (!userId || !businessId || !ticketNumber) {
+        return res.json({ success: false, message: "Missing userId, businessId, or ticketNumber" });
     }
 
-    // Check if user is already in a queue
-    db.query("SELECT * FROM queue WHERE user_id = ?", [userId], (err, results) => {
-        if (err) return res.json({ success: false, message: "Database error" });
+    db.query(
+        "SELECT * FROM queue WHERE user_id = ? AND business_id = ?",
+        [userId, businessId],
+        (err, results) => {
+            if (err) return res.json({ success: false, message: "Database error" });
 
-        if (results.length > 0) {
-            const existingTicket = results[0].ticket_number;
-            return res.json({
-                success: false,
-                message: "You are already in a queue",
-                ticketNumber: existingTicket,
-                businessId: results[0].business_id
-            });
+            if (results.length > 0)
+                return res.json({ success: false, message: "You are already in this queue" });
+
+            db.query(
+                "INSERT INTO queue (user_id, business_id, ticket_number) VALUES (?, ?, ?)",
+                [userId, businessId, ticketNumber],
+                (err2) => {
+                    if (err2) return res.json({ success: false, message: "Could not join queue" });
+
+                    res.json({ success: true, ticketNumber });
+                }
+            );
         }
+    );
+});
 
-        // Generate ticket number
-        const ticketNumber = `A${Math.floor(Math.random() * 99 + 1)}`;
+// get queue info
+app.post('/get-queue-info', (req, res) => {
+  const { userId } = req.body;
 
-        db.query(
-            "INSERT INTO queue (user_id, business_id, ticket_number) VALUES (?, ?, ?)",
-            [userId, businessId, ticketNumber],
-            (err2) => {
-                if (err2) return res.json({ success: false, message: "Could not join queue" });
+  if (!userId) {
+    return res.json({ success: false, message: "User not found." });
+  }
 
-                res.json({
-                    success: true,
-                    ticketNumber
-                });
-            }
-        );
-    });
+  // Join queue with businesses to get the business name
+  const query = `
+  SELECT q.ticket_number, q.business_id, b.name AS business_name
+  FROM queue q
+  JOIN businesses b ON q.business_id = b.id
+  WHERE q.user_id = ?
+`;
+
+
+  db.query(query, [userId], (err, results) => {
+    if (err) return res.json({ success: false, message: "Database error" });
+
+    res.json({ success: true, results });
+  });
 });
 
 // GET /user-queue/:userId
@@ -154,3 +168,48 @@ app.get('/user-queue/:userId', (req, res) => {
         res.json({ success: true, queue: results[0] || null });
     });
 });
+
+
+
+// ================= NOTIFICATION ROUTES =================
+app.get('/notifications/:userId', (req, res) => {
+    const userId = req.params.userId;
+
+    db.query(
+        "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC",
+        [userId],
+        (err, results) => {
+            if (err) return res.status(500).json({ success: false, message: "DB error" });
+
+            const formatted = results.map(n => ({
+                id: n.id,
+                message: n.message,
+                type: n.type,
+                read: !!n.is_read,
+                created_at: n.created_at
+            }));
+
+            res.json(formatted);
+        }
+    );
+});
+
+app.post('/notifications/mark-read', (req, res) => {
+    const { userId, notificationId } = req.body;
+
+    db.query(
+        "UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?",
+        [notificationId, userId],
+        (err) => {
+            if (err) return res.json({ success: false });
+            res.json({ success: true });
+        }
+    );
+});
+
+// ================= STATIC MUST BE LAST =================
+app.use(express.static('public'));
+
+app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}`)
+);
