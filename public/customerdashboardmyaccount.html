@@ -8,13 +8,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-</head>
 <body>
+
 <div class="page-wrapper">
 
     <h1 class="app-title">Queue Management System</h1><br>
 
-    <!-- NAV BAR (same as dashboard) -->
+    <!-- NAV BAR -->
     <div class="topnav">
         <div class="nav-left">
             <a href="customerdashboard.html">Dashboard</a>
@@ -22,38 +22,50 @@
             <a href="notificationinbox.html">Notification Inbox</a>
         </div>
 
-       <div class="nav-right">
-     <div class="account-icon">
-        <a href="customerdashboardmyaccount.html" class="active">👤</a>
-    </div>
-    </a>
-</div>
-
+        <div class="nav-right">
+            <div class="account-icon">
+                <a href="customerdashboardmyaccount.html" class="active">👤</a>
+            </div>
+        </div>
     </div>
 
     <br><h2 class="dashboard-title">My Account</h2>
 
-    <div class="page-wrapper">
-        <div class="account-card">
+    <div class="account-card">
+        <div class="account-layout">
 
-            <div class="account-layout">
-                <div class="account-image"></div>
+            <div class="account-image"></div>
 
-                <div class="account-info">
-                    <p><strong>Name:</strong> Jane Doe</p>
-                    <p><strong>Address:</strong> 123 Main Street</p>
-                    <p><strong>Phone Number:</strong> 647 923 7456</p>
-                    <p><strong>Date of Birth:</strong> 10th Jan, 2003</p>
-                    <p><strong>Gender:</strong> Male</p>
-                </div>
+            <div class="account-info">
+                <p><strong>Name:</strong> <span id="accName"></span></p>
+                <p><strong>Email:</strong> <span id="accEmail"></span></p>
             </div>
+        </div>
 
-            <div class="button-row">
-                <a href="logincustomer.html" class="btn">Logout</a>
-            </div>
-
+        <div class="button-row">
+            <a href="mainlogin.html" class="btn" onclick="logout()">Logout</a>
         </div>
     </div>
+
 </div>
+
+<script>
+// Load user info from localStorage
+document.addEventListener("DOMContentLoaded", () => {
+    const name = localStorage.getItem("username");
+    const email = localStorage.getItem("userEmail") || "Not available";
+
+    document.getElementById("accName").textContent = name || "User";
+    document.getElementById("accEmail").textContent = email;
+});
+
+// Clear storage on logout
+function logout() {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userEmail");
+}
+</script>
+
 </body>
 </html>

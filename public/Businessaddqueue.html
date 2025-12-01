@@ -28,7 +28,7 @@
         <div class="account-dropdown">
           <div class="account-icon">👤</div>
           <div class="account-menu">
-            <a href="loginbusiness.html">Logout</a>
+            <a href="mainlogin.html">Logout</a>
           </div>
         </div>
       </div>
@@ -76,19 +76,33 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const payload = {
-        name: document.getElementById("queueName").value.trim(),
-        type: document.getElementById("queueType").value.trim(),
-        date: document.getElementById("queueDate").value,
-        location: document.getElementById("queueLocation").value.trim(),
-        access: document.getElementById("queueAccess").value.trim(),
-        capacity: document.getElementById("queueCapacity").value
-      };
+      const name = document.getElementById("queueName").value.trim();
+      const category = document.getElementById("queueType").value.trim();
+      const location = document.getElementById("queueLocation").value.trim();
+      const working_days = document.getElementById("queueDate").value;
 
-      if (!payload.name || !payload.location) {
-        alert("Please fill in at least name and location.");
+      const access = document.getElementById("queueAccess").value.trim();
+      const capacity = document.getElementById("queueCapacity").value;
+
+      const descriptionParts = [];
+      if (access) descriptionParts.push(`Access: ${access}`);
+      if (capacity) descriptionParts.push(`Capacity: ${capacity}`);
+      const description = descriptionParts.join(" | ");
+
+      if (!name || !location || !category) {
+        alert("Please fill in name, location, and type.");
         return;
       }
+
+      const payload = {
+        name,
+        location,
+        working_days,
+        waiting_time: 0,
+        queue_length: 0,
+        category,
+        description
+      };
 
       try {
         const res = await fetch("http://localhost:3000/businesses", {

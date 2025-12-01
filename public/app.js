@@ -1,171 +1,195 @@
-// ---------------- CUSTOMER SIGNUP ----------------
-const signupForm = document.getElementById("signupForm");
-if (signupForm) {
-    signupForm.addEventListener("submit", async function(event) {
-        event.preventDefault();
+// ==========================================================
+// BUSINESS LOGIN
+// ==========================================================
+async function login() {
+    const employee_id = document.getElementById("employeeId")?.value.trim();
+    const password = document.getElementById("employeePassword")?.value.trim();
+    const msg = document.getElementById("employeeMessage");
 
-        const username = document.getElementById("username").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
-        const message = document.getElementById("message");
+    if (!employee_id || !password) return;
 
-        if (password !== confirmPassword) {
-            message.textContent = "Passwords do not match!";
-            return;
-        }
+    msg.textContent = "";
 
-        try {
-            const response = await fetch("http://localhost:3000/signup", {
+    const res = await fetch("http://localhost:3000/employee-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ employee_id, password })
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+        msg.textContent = data.message || "Login failed.";
+        return;
+    }
+
+    localStorage.setItem("employeeId", data.employeeId);
+    localStorage.setItem("employeeName", data.name);
+
+    window.location.href = "businessoverview.html";
+}
+
+
+
+// ==========================================================
+// CUSTOMER LOGIN
+// ==========================================================
+async function loginUser(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("loginEmail")?.value.trim();
+    const password = document.getElementById("loginPassword")?.value.trim();
+    const msg = document.getElementById("loginMessage");
+
+    msg.textContent = "";
+
+    const res = await fetch("http://localhost:3000/customer-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+        msg.textContent = data.message || "Login failed.";
+        return;
+    }
+
+    localStorage.setItem("userId", data.userId);
+    localStorage.setItem("username", data.username);
+
+    window.location.href = "customerdashboard.html";
+}
+
+
+
+// ==========================================================
+// DOMContentLoaded: signup + customer login + business list
+// ==========================================================
+document.addEventListener("DOMContentLoaded", () => {
+
+    // ---------------- CUSTOMER SIGNUP ----------------
+    const signupForm = document.getElementById("signupForm");
+    if (signupForm) {
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById("username").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const msg = document.getElementById("message");
+
+            msg.textContent = "";
+
+            if (password !== confirmPassword) {
+                msg.textContent = "Passwords do not match!";
+                return;
+            }
+
+            const res = await fetch("http://localhost:3000/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password })
             });
 
-            const data = await response.json();
-            message.textContent = data.message;
+            const data = await res.json();
 
-            if (data.success) {
-                setTimeout(() => {
-                    window.location.href = "logincustomer.html";
-                }, 500);
-            } else {
-                signupForm.reset();
+            if (!data.success) {
+                msg.textContent = data.message;
+                return;
             }
-        } catch (err) {
-            console.error(err);
-            message.textContent = "Server error. Please try again later.";
-        }
-    });
-}
 
-// ---------------- CUSTOMER LOGIN ----------------
-const loginForm = document.getElementById("loginForm");
-if (loginForm) {
-    loginForm.addEventListener("submit", async function(e) {
-        e.preventDefault();
+            msg.style.color = "green";
+            msg.textContent = "Signup successful! Redirecting...";
 
-        const email = document.getElementById("loginEmail").value.trim();
-        const password = document.getElementById("loginPassword").value;
-        const message = document.getElementById("loginMessage");
-        message.textContent = "";
-
-        try {
-            const response = await fetch("http://localhost:3000/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                window.location.href = "customerdashboard.html";
-                localStorage.setItem("userId", data.userId || null);
-            } else {
-                message.textContent = data.message || "Incorrect email or password";
-            }
-        } catch (err) {
-            console.error(err);
-            message.textContent = "Server error. Please try again later.";
-        }
-    });
-}
-
-// ---------------- EMPLOYEE LOGIN ----------------
-const employeeForm = document.getElementById("employeeLoginForm");
-if (employeeForm) {
-    employeeForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const employeeId = document.getElementById("employeeId").value;
-        const password = document.getElementById("employeePassword").value;
-        const message = document.getElementById("employeeMessage");
-
-        fetch("http://localhost:3000/employee-login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ employeeId, password })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = "businessoverview.html";
-            } else {
-                message.textContent = data.message;
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            message.textContent = "Server error. Please try again.";
+            setTimeout(() => {
+                window.location.href = "logincustomer.html";
+            }, 1500);
         });
-    });
-}
+    }
 
-// ---------------- FETCH AND DISPLAY BUSINESSES ----------------
-async function loadBusinesses(filter = "") {
-    const container = document.getElementById("businessContainer");
-    if (!container) return;
+    // ---------------- CUSTOMER LOGIN PAGE ----------------
+    const customerLoginForm = document.getElementById("loginForm");
+    if (customerLoginForm) {
+        customerLoginForm.addEventListener("submit", loginUser);
+    }
 
-    container.textContent = "Loading businesses...";
+    // ---------------- CUSTOMER DASHBOARD: LOAD BUSINESSES ----------------
+    const businessContainer = document.getElementById("businessContainer");
+    const filterDropdown = document.getElementById("filterDropdown");
 
-    try {
-        const response = await fetch("http://localhost:3000/businesses");
-        const data = await response.json();
+    if (businessContainer) {
+        let allBusinesses = [];
 
-        const businesses = data.businesses; // ✅ CORRECT DATA SOURCE
+        function renderBusinesses(list) {
+            businessContainer.innerHTML = "";
 
-        container.innerHTML = "";
+            if (!list || list.length === 0) {
+                businessContainer.innerHTML = "<p>No businesses available.</p>";
+                return;
+            }
 
-        if (!businesses || businesses.length === 0) {
-            container.textContent = "No businesses found.";
-            return;
-        }
-
-        businesses
-            .filter(b => filter === "" || b.category === filter)
-            .forEach(biz => {
+            list.forEach(biz => {
                 const card = document.createElement("div");
-                card.className = "business-card";
+                card.className = "business-row-card";
 
                 card.innerHTML = `
-                    <div class="card-content">
-                        <div class="card-info">
+                    <div class="business-row-main">
+                        <div class="business-row-text">
                             <h3>${biz.name}</h3>
                             <p><strong>Location:</strong> ${biz.location}</p>
-                            <p><strong>Working Days:</strong> ${biz.working_days}</p>
-                            <p><strong>Waiting Time:</strong> ${biz.waiting_time} mins</p>
-                            <p><strong>Queue Length:</strong> ${biz.queue_length}</p>
-                            <p><strong>Category:</strong> ${biz.category}</p>
+                            <p><strong>Category:</strong> ${biz.category || "N/A"}</p>
+                            <p><strong>Working Days:</strong> ${biz.working_days || "N/A"}</p>
+                            <p><strong>Approx. Wait Time:</strong> ${biz.waiting_time || 0} minutes</p>
+                            <p><strong>People in Queue:</strong> ${biz.queue_length || 0}</p>
                         </div>
-                        <div class="card-action">
-                            <button class="view-btn" data-id="${biz.id}">View</button>
+                        <div class="business-row-actions">
+                            <button class="btn"
+                                onclick="window.location.href='businessdetails.html?id=${biz.id}'">
+                                View
+                            </button>
                         </div>
                     </div>
                 `;
 
-                container.appendChild(card);
-
-                card.querySelector(".view-btn").addEventListener("click", () => {
-                    window.location.href = `businessdetails.html?id=${biz.id}`;
-                });
+                businessContainer.appendChild(card);
             });
+        }
 
-    } catch (err) {
-        console.error(err);
-        container.textContent = "Server error. Could not load businesses.";
+        async function loadBusinesses() {
+            try {
+                const res = await fetch("http://localhost:3000/businesses");
+                const data = await res.json();
+
+                if (!data.success) {
+                    businessContainer.innerHTML = "<p>Failed to load businesses.</p>";
+                    return;
+                }
+
+                allBusinesses = data.businesses || [];
+                applyFilter();
+            } catch (err) {
+                console.error("Error loading businesses:", err);
+                businessContainer.innerHTML = "<p>Error loading businesses.</p>";
+            }
+        }
+
+        function applyFilter() {
+            const value = filterDropdown ? filterDropdown.value : "";
+            if (!value) {
+                renderBusinesses(allBusinesses);
+            } else {
+                const filtered = allBusinesses.filter(b => (b.category || "").toLowerCase() === value.toLowerCase());
+                renderBusinesses(filtered);
+            }
+        }
+
+        if (filterDropdown) {
+            filterDropdown.addEventListener("change", applyFilter);
+        }
+
+        loadBusinesses();
     }
-}
-
-// ---------------- FILTER DROPDOWN ----------------
-const filterDropdown = document.getElementById("filterDropdown");
-if (filterDropdown) {
-    filterDropdown.addEventListener("change", () => {
-        loadBusinesses(filterDropdown.value);
-    });
-}
-
-// ---------------- AUTO LOAD ON PAGE OPEN ----------------
-window.addEventListener("DOMContentLoaded", () => {
-    loadBusinesses(); 
 });

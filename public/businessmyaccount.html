@@ -3,61 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>My Account</title>
-    <link rel="stylesheet" href="fstyle.css">
+    <link rel="stylesheet" href="mstyle.css">
 </head>
 <body>
 <div class="page-wrapper">
 
-    <h1 class="app-title">Queue Management System</h1><br>
+    <h1 class="app-title">Business Dashboard</h1><br>
 
-    <!-- NAV BAR (same as dashboard) -->
-   <div class="topnav">
+    <!-- NAV BAR (same as business dashboard) -->
+    <div class="topnav">
 
-          <!-- LEFT NAV LINKS -->
-          <div class="nav-left">
-              <a href="businessoverview.html" class="active">Overview</a>
-              <a href="businessQueue.html">Queues</a>
-              <a href="businessManage.html">Manage Queues</a>
-              <a href="businessReports.html">Reports/Analytics</a>
-          </div>
+        <!-- LEFT NAV LINKS -->
+        <div class="nav-left">
+            <a href="businessoverview.html">Overview</a>
+            <a href="businessQueue.html">Queues</a>
+            <a href="businessManage.html">Manage Queues</a>
+            <a href="businessReports.html">Reports/Analytics</a>
+        </div>
 
-          <!-- RIGHT SIDE ICONS -->
-          <div class="nav-right">
-  <div class="account-dropdown">
-    <div class="account-icon">👤</div>
-
-    <div class="account-menu">
-      <a href="loginbusiness.html">Logout</a>
+        <!-- RIGHT SIDE ICONS -->
+        <div class="nav-right">
+            <div class="account-dropdown">
+                <div class="account-icon">👤</div>
+                <div class="account-menu">
+                    <a href="mainlogin.html">Logout</a>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-    </div>
-
 
     <br><h2 class="dashboard-title">My Account</h2>
 
-    <div class="page-wrapper">
-        <div class="account-card">
+    <div class="account-card">
+        <div class="account-layout">
+            <div class="account-image"></div>
 
-            <div class="account-layout">
-                <div class="account-image"></div>
-
-                <div class="account-info">
-                    <p><strong>Name:</strong> Jane Doe</p>
-                    <p><strong>Address:</strong> 123 Main Street</p>
-                    <p><strong>Phone Number:</strong> 647 923 7456</p>
-                    <p><strong>Date of Birth:</strong> 10th Jan, 2003</p>
-                    <p><strong>Gender:</strong> Male</p>
-                </div>
+            <div class="account-info">
+                <p><strong>Name:</strong> Jane Doe</p>
+                <p><strong>Address:</strong> 123 Main Street</p>
+                <p><strong>Phone Number:</strong> 647 923 7456</p>
+                <p><strong>Date of Birth:</strong> 10th Jan, 2003</p>
+                <p><strong>Gender:</strong> Male</p>
             </div>
+        </div>
 
-            <div class="button-row">
-                <a href="customerdashboard.html" class="btn">Cancel</a>
-                <a href="logincustomer.html" class="btn">Logout</a>
-            </div>
-
+        <div class="button-row">
+            <a href="businessoverview.html" class="btn">Back</a>
+            <a href="loginbusiness.html" class="btn">Logout</a>
         </div>
     </div>
+
 </div>
 </body>
 </html>

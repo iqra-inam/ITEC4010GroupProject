@@ -27,7 +27,7 @@
         <div class="account-dropdown">
           <div class="account-icon">👤</div>
           <div class="account-menu">
-            <a href="loginbusiness.html">Logout</a>
+            <a href="mainlogin.html">Logout</a>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
 
       <h2 class="dashboard-title" id="manageTitle">Manage Active Queue</h2>
 
-      <!-- 3 CARD LAYOUT -->
+      <!-- CARDS -->
       <div class="manage-queue-cards">
 
         <!-- ADD QUEUE -->
@@ -51,20 +51,12 @@
           </a>
         </div>
 
-        <!-- LIST OF QUEUES -->
+        <!-- LIST / DELETE QUEUE -->
         <div class="queue-card">
           <div class="queue-card-content" id="queueListCard">
             <p>Select a business queue from Overview or Queues pages.</p>
           </div>
           <button class="queue-btn delete-btn" id="deleteQueueBtn">Delete Queue</button>
-        </div>
-
-        <!-- EDIT QUEUE -->
-        <div class="queue-card">
-          <div class="queue-card-content">
-            <p>Update queue status for each ticket.</p>
-          </div>
-          <button class="queue-btn edit-btn" id="editQueueBtn">Edit Queue</button>
         </div>
 
       </div>
@@ -77,12 +69,13 @@
               <th>Ticket</th>
               <th>User ID</th>
               <th>Status (local only)</th>
-              <th></th>
+              <th>Action</th>
             </tr>
           </thead>
-
           <tbody id="activeQueueBody">
-            <!-- Filled dynamically -->
+            <tr>
+              <td colspan="4">No one in the queue yet.</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -92,102 +85,185 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    let businessId = params.get("businessId") || null;
+  const params = new URLSearchParams(window.location.search);
+  let businessId = params.get("businessId") || null;
 
-    async function loadManagePage() {
-      const titleEl = document.getElementById("manageTitle");
-      const tbody = document.getElementById("activeQueueBody");
+  async function loadManagePage() {
+    const titleEl = document.getElementById("manageTitle");
+    const tbody = document.getElementById("activeQueueBody");
 
-      tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+    tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
 
-      try {
-        // Load all businesses first to find the one we're managing
-        const bizRes = await fetch("http://localhost:3000/businesses");
-        const bizData = await bizRes.json();
+    try {
+      // Load all businesses first to find the one we're managing
+      const bizRes = await fetch("http://localhost:3000/businesses");
+      const bizData = await resToJsonSafe(bizRes);
 
-        if (!bizData.success) {
-          tbody.innerHTML = "<tr><td colspan='4'>Could not load businesses.</td></tr>";
-          return;
-        }
+      if (!bizData || !bizData.success) {
+        tbody.innerHTML = "<tr><td colspan='4'>Could not load businesses.</td></tr>";
+        return;
+      }
 
-        const businesses = bizData.businesses || [];
+      const businesses = bizData.businesses || [];
 
-        if (!businesses.length) {
-          titleEl.textContent = "Manage Active Queue – No businesses found";
-          tbody.innerHTML = "<tr><td colspan='4'>No data.</td></tr>";
-          return;
-        }
+      if (!businesses.length) {
+        titleEl.textContent = "Manage Active Queue – No businesses found";
+        tbody.innerHTML = "<tr><td colspan='4'>No data.</td></tr>";
+        return;
+      }
 
-        let current = null;
-        if (businessId) {
-          current = businesses.find(b => String(b.id) === String(businessId));
-        }
-        if (!current) {
-          current = businesses[0];
-          businessId = current.id;
-        }
+      let current = null;
 
-        titleEl.textContent = `Manage Active Queue – ${current.name}`;
+      // 1) If we have a businessId in URL, try to use that
+      if (businessId) {
+        current = businesses.find(b => String(b.id) === String(businessId));
+      }
 
-        // Now load the queue for this business
-        const queueRes = await fetch(`http://localhost:3000/business-queue/${businessId}`);
-        const queueData = await queueRes.json();
+      // 2) If none or invalid, pick first business that actually has people in queue
+      if (!current) {
+        current = businesses.find(b => Number(b.queue_length) > 0);
+      }
 
-        if (!queueData.success) {
-          tbody.innerHTML = "<tr><td colspan='4'>Could not load queue.</td></tr>";
-          return;
-        }
+      // 3) If still none, just pick the first business
+      if (!current) {
+        current = businesses[0];
+      }
 
-        const queue = queueData.queue || [];
+      // Ensure businessId is in sync
+      businessId = current.id;
+      titleEl.textContent = `Manage Active Queue – ${current.name}`;
 
-        if (!queue.length) {
-          tbody.innerHTML = "<tr><td colspan='4'>No one in the queue yet.</td></tr>";
-          return;
-        }
+      // Now load the queue for this business
+      const queueRes = await fetch(`http://localhost:3000/business-queue/${businessId}`);
+      const queueData = await resToJsonSafe(queueRes);
 
-        tbody.innerHTML = "";
+      console.log("business-queue response:", queueData);
 
-        queue.forEach(entry => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${entry.ticket_number}</td>
-            <td>${entry.user_id}</td>
-            <td>
-              <select class="status-select">
-                <option>Waiting</option>
-                <option>Served</option>
-                <option>Skipped</option>
-                <option>No Show</option>
-              </select>
-            </td>
-            <td></td>
-          `;
+      if (!queueData || !queueData.success) {
+        tbody.innerHTML = "<tr><td colspan='4'>Could not load queue.</td></tr>";
+        return;
+      }
 
-          // Currently this status is only local (no backend update)
-          tr.querySelector(".status-select").addEventListener("change", () => {
-            // You can hook a PUT endpoint here later if you want
-          });
+      const queue = queueData.queue || queueData.customers || [];
 
-          tbody.appendChild(tr);
+      if (!queue.length) {
+        tbody.innerHTML = "<tr><td colspan='4'>No one in the queue yet.</td></tr>";
+        return;
+      }
+
+      tbody.innerHTML = "";
+
+      queue.forEach(entry => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${entry.ticket_number}</td>
+          <td>${entry.username || entry.user_id}</td>
+          <td>
+            <select class="status-select">
+              <option>Waiting</option>
+              <option>Served</option>
+              <option>Skipped</option>
+              <option>No Show</option>
+            </select>
+          </td>
+          <td>
+            <button class="leave-btn" data-user="${entry.user_id}">
+              Remove
+            </button>
+          </td>
+        `;
+
+        // Local-only status change (can wire to backend later)
+        tr.querySelector(".status-select").addEventListener("change", () => {
+          // placeholder for future backend call
         });
 
-      } catch (err) {
-        console.error(err);
-        document.getElementById("activeQueueBody").innerHTML =
-          "<tr><td colspan='4'>Error loading queue.</td></tr>";
-      }
+        // Remove single user from queue
+        tr.querySelector(".leave-btn").addEventListener("click", async () => {
+          const userId = entry.user_id;
+          const confirmLeave = confirm(`Remove user ${entry.username || userId} from this queue?`);
+          if (!confirmLeave) return;
+
+          try {
+            const res = await fetch("http://localhost:3000/leave-queue", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId: Number(userId) })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+              alert(`Removed user ${entry.username || userId} from the queue.`);
+              loadManagePage();
+            } else {
+              alert(data.message || "Failed to remove user.");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Server error.");
+          }
+        });
+
+        tbody.appendChild(tr);
+      });
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById("activeQueueBody").innerHTML =
+        "<tr><td colspan='4'>Error loading queue.</td></tr>";
+    }
+  }
+
+  // Helper: safe JSON parse
+  async function resToJsonSafe(res) {
+    try {
+      return await res.json();
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      return null;
+    }
+  }
+
+  // DELETE QUEUE BUTTON: clear all entries for this business
+  // DELETE QUEUE BUTTON: delete this business + its queue
+document.getElementById("deleteQueueBtn").addEventListener("click", async () => {
+    if (!businessId) {
+        alert("No business selected.");
+        return;
     }
 
-    document.getElementById("deleteQueueBtn").addEventListener("click", () => {
-      alert("If you want, we can wire this to a DELETE /businesses/:id endpoint.");
-    });
+    const confirmDelete = confirm(
+        "This will delete this entire queue (business) and remove all customers. Continue?"
+    );
+    if (!confirmDelete) return;
 
-    document.getElementById("editQueueBtn").addEventListener("click", () => {
-      alert("Right now status changes are local only. Add a backend endpoint to save them if needed.");
-    });
+    try {
+        const res = await fetch("http://localhost:3000/delete-business", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ businessId })
+        });
 
-    loadManagePage();
+        const data = await res.json();
+        if (!data.success) {
+            alert(data.message || "Failed to delete queue.");
+            return;
+        }
+
+        alert("Queue deleted successfully.");
+        // Go back to the list of queues
+        window.location.href = "businessQueue.html";
+    } catch (err) {
+        console.error(err);
+        alert("Server error while deleting queue.");
+    }
+});
+
+  // initial load + periodic refresh
+  loadManagePage();
+  setInterval(loadManagePage, 3000);
   </script>
 
 </body>

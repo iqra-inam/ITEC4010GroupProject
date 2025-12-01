@@ -132,40 +132,49 @@
 <div class="success-popup" id="successPopup">You have left the queue</div>
 
 <script>
-const leaveBtn = document.getElementById('leaveBtn');
-const modalOverlay = document.getElementById('modalOverlay');
-const confirmLeave = document.getElementById('confirmLeave');
-const cancelLeave = document.getElementById('cancelLeave');
-const queueCard = document.getElementById('queueCard');
-const successPopup = document.getElementById('successPopup');
+const userId = localStorage.getItem("userId");
 
-// Show modal when clicking leave
-leaveBtn.addEventListener('click', () => {
-    modalOverlay.style.display = 'flex';
-    document.body.classList.add('modal-open');
-});
+async function loadQueue() {
+    const res = await fetch(`http://localhost:3000/user-queue/${userId}`);
+    const data = await res.json();
 
-// Cancel button closes modal
-cancelLeave.addEventListener('click', () => {
-    modalOverlay.style.display = 'none';
-    document.body.classList.remove('modal-open');
-});
+    const card = document.getElementById("queueCard");
 
-// Yes button removes queue and shows success popup
-confirmLeave.addEventListener('click', () => {
-    queueCard.style.display = 'none'; 
-    modalOverlay.style.display = 'none';
-    document.body.classList.remove('modal-open');
+    if (!data.success || !data.queue) {
+        card.innerHTML = "<h3>You are not in any queue.</h3>";
+        return;
+    }
 
-    // Show success popup
-    successPopup.classList.add('show');
+    const q = data.queue;
 
-    // Hide after 3 seconds
-    setTimeout(() => {
-        successPopup.classList.remove('show');
-    }, 3000);
-});
+    card.innerHTML = `
+        <h3>Current Queue</h3>
+        <p><strong>Business:</strong> ${q.business_name}</p>
+        <p><strong>Ticket Number:</strong> ${q.ticket_number}</p>
+        <button id="leaveBtn" class="btn">Leave Queue</button>
+    `;
+
+    document.getElementById("leaveBtn").addEventListener("click", leaveQueue);
+}
+
+async function leaveQueue() {
+    const res = await fetch("http://localhost:3000/leave-queue", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ userId })
+    });
+
+    const data = await res.json();
+
+    if (!data.success) return alert(data.message);
+
+    alert("You left the queue.");
+    window.location.reload();
+}
+
+loadQueue();
 </script>
+
 
 </body>
 </html>
