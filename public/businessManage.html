@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>Business Dashboard – Manage Queues</title>
   <link rel="stylesheet" href="mstyle.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -12,10 +15,8 @@
 
     <h1 class="app-title">Business Dashboard: Manage Queues</h1><br>
 
-    <!-- TOP NAV -->
     <div class="topnav">
 
-      <!-- LEFT NAV -->
       <div class="nav-left">
         <a href="businessoverview.html">Overview</a>
         <a href="businessQueue.html">Queues</a>
@@ -33,15 +34,12 @@
       </div>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="dashboard-container">
 
       <h2 class="dashboard-title" id="manageTitle">Manage Active Queue</h2>
 
-      <!-- CARDS -->
       <div class="manage-queue-cards">
 
-        <!-- ADD QUEUE -->
         <div class="queue-card">
           <div class="queue-card-content">
             <div class="big-plus">+</div>
@@ -51,7 +49,6 @@
           </a>
         </div>
 
-        <!-- LIST / DELETE QUEUE -->
         <div class="queue-card">
           <div class="queue-card-content" id="queueListCard">
             <p>Select a business queue from Overview or Queues pages.</p>
@@ -61,7 +58,6 @@
 
       </div>
 
-      <!-- ACTIVE QUEUE TABLE -->
       <div class="manage-table-wrapper">
         <table class="manage-table">
           <thead>
@@ -84,7 +80,7 @@
 
   </div>
 
-  <script>
+<script>
   const params = new URLSearchParams(window.location.search);
   let businessId = params.get("businessId") || null;
 
@@ -95,7 +91,6 @@
     tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
 
     try {
-      // Load all businesses first to find the one we're managing
       const bizRes = await fetch("http://localhost:3000/businesses");
       const bizData = await resToJsonSafe(bizRes);
 
@@ -114,26 +109,21 @@
 
       let current = null;
 
-      // 1) If we have a businessId in URL, try to use that
       if (businessId) {
         current = businesses.find(b => String(b.id) === String(businessId));
       }
 
-      // 2) If none or invalid, pick first business that actually has people in queue
       if (!current) {
         current = businesses.find(b => Number(b.queue_length) > 0);
       }
 
-      // 3) If still none, just pick the first business
       if (!current) {
         current = businesses[0];
       }
 
-      // Ensure businessId is in sync
       businessId = current.id;
       titleEl.textContent = `Manage Active Queue – ${current.name}`;
 
-      // Now load the queue for this business
       const queueRes = await fetch(`http://localhost:3000/business-queue/${businessId}`);
       const queueData = await resToJsonSafe(queueRes);
 
@@ -174,12 +164,9 @@
           </td>
         `;
 
-        // Local-only status change (can wire to backend later)
         tr.querySelector(".status-select").addEventListener("change", () => {
-          // placeholder for future backend call
         });
 
-        // Remove single user from queue
         tr.querySelector(".leave-btn").addEventListener("click", async () => {
           const userId = entry.user_id;
           const confirmLeave = confirm(`Remove user ${entry.username || userId} from this queue?`);
@@ -216,7 +203,6 @@
     }
   }
 
-  // Helper: safe JSON parse
   async function resToJsonSafe(res) {
     try {
       return await res.json();
@@ -226,9 +212,7 @@
     }
   }
 
-  // DELETE QUEUE BUTTON: clear all entries for this business
-  // DELETE QUEUE BUTTON: delete this business + its queue
-document.getElementById("deleteQueueBtn").addEventListener("click", async () => {
+  document.getElementById("deleteQueueBtn").addEventListener("click", async () => {
     if (!businessId) {
         alert("No business selected.");
         return;
@@ -253,18 +237,16 @@ document.getElementById("deleteQueueBtn").addEventListener("click", async () => 
         }
 
         alert("Queue deleted successfully.");
-        // Go back to the list of queues
         window.location.href = "businessQueue.html";
     } catch (err) {
         console.error(err);
         alert("Server error while deleting queue.");
     }
-});
+  });
 
-  // initial load + periodic refresh
   loadManagePage();
   setInterval(loadManagePage, 3000);
-  </script>
+</script>
 
 </body>
 </html>

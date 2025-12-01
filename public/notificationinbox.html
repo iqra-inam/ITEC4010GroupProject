@@ -15,7 +15,6 @@
 
         <h1 class="app-title">Notification Inbox</h1><br>
 
-        <!-- TOP NAV -->
         <div class="topnav">
 
             <div class="nav-left">
@@ -38,13 +37,11 @@
 
         </div>
 
-        <!-- NOTIFICATION LIST -->
         <div class="dashboard-container">
 
             <h2 class="dashboard-title">Your Notifications</h2>
 
             <div id="notificationList" class="notification-list">
-                <!-- Notifications will be injected here from DB -->
             </div>
 
             <template id="notificationTemplate">
@@ -62,45 +59,44 @@
 
     </div>
 
-    <script>
-window.addEventListener("DOMContentLoaded", async () => {
-    const USER_ID = localStorage.getItem("userId");
-    console.log(USER_ID);
-    const container = document.getElementById("notificationList");
+<script>
+    window.addEventListener("DOMContentLoaded", async () => {
+        const USER_ID = localStorage.getItem("userId");
+        console.log(USER_ID);
+        const container = document.getElementById("notificationList");
 
-    if (!USER_ID) {
-        container.innerHTML = "<p>Please log in again.</p>";
-        return;
-    }
-
-    try {
-        const res = await fetch(`http://localhost:3000/notifications/${USER_ID}`);
-        const notifications = await res.json();
-
-        container.innerHTML = "";
-
-        if (!notifications.length) {
-            container.innerHTML = "<p>No notifications yet.</p>";
+        if (!USER_ID) {
+            container.innerHTML = "<p>Please log in again.</p>";
             return;
         }
 
-        notifications.forEach(n => {
-            const div = document.createElement("div");
-            div.className = "notification-item";
-            div.innerHTML = `
-                <h4>${n.title}</h4>
-                <p>${n.message}</p>
-                <small>${new Date(n.created_at).toLocaleString()}</small>
-            `;
-            container.appendChild(div);
-        });
-    } catch (err) {
-        container.innerHTML = "<p>Error loading notifications.</p>";
-        console.error(err);
-    }
-});
-</script>
+        try {
+            const res = await fetch(`http://localhost:3000/notifications/${USER_ID}`);
+            const notifications = await res.json();
 
+            container.innerHTML = "";
+
+            if (!notifications.length) {
+                container.innerHTML = "<p>No notifications yet.</p>";
+                return;
+            }
+
+            notifications.forEach(n => {
+                const div = document.createElement("div");
+                div.className = "notification-item";
+                div.innerHTML = `
+                    <h4>${n.title}</h4>
+                    <p>${n.message}</p>
+                    <small>${new Date(n.created_at).toLocaleString()}</small>
+                `;
+                container.appendChild(div);
+            });
+        } catch (err) {
+            container.innerHTML = "<p>Error loading notifications.</p>";
+            console.error(err);
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -1,10 +1,12 @@
-<!-- businessQueue.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Business Dashboard – Queues</title>
   <link rel="stylesheet" href="mstyle.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -13,10 +15,8 @@
 
       <h1 class="app-title">Business Dashboard – Queues</h1><br>
 
-      <!-- TOP NAV -->
       <div class="topnav">
 
-          <!-- LEFT NAV -->
           <div class="nav-left">
               <a href="businessoverview.html">Overview</a>
               <a href="businessQueue.html" class="active">Queues</a>
@@ -24,7 +24,6 @@
               <a href="businessReports.html">Reports/Analytics</a>
           </div>
 
-          <!-- RIGHT NAV -->
           <div class="nav-right">
             <div class="account-dropdown">
               <div class="account-icon">👤</div>
@@ -35,7 +34,6 @@
           </div>
       </div>
 
-      <!-- MAIN CONTENT -->
       <div class="dashboard-container">
 
           <h2 class="dashboard-title">All Queues</h2>
@@ -52,7 +50,6 @@
                   </thead>
 
                   <tbody id="queueTableBody">
-                      <!-- Filled dynamically -->
                   </tbody>
               </table>
           </div>
@@ -61,7 +58,7 @@
 
   </div>
 
-  <script>
+<script>
     async function loadQueues() {
       const tbody = document.getElementById("queueTableBody");
       tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
@@ -109,7 +106,7 @@
     }
 
     loadQueues();
-  </script>
+</script>
 
 </body>
 </html>

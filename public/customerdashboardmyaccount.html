@@ -14,7 +14,6 @@
 
     <h1 class="app-title">Queue Management System</h1><br>
 
-    <!-- NAV BAR -->
     <div class="topnav">
         <div class="nav-left">
             <a href="customerdashboard.html">Dashboard</a>
@@ -50,21 +49,19 @@
 </div>
 
 <script>
-// Load user info from localStorage
-document.addEventListener("DOMContentLoaded", () => {
-    const name = localStorage.getItem("username");
-    const email = localStorage.getItem("userEmail") || "Not available";
+    document.addEventListener("DOMContentLoaded", () => {
+        const name = localStorage.getItem("username");
+        const email = localStorage.getItem("userEmail") || "Not available";
 
-    document.getElementById("accName").textContent = name || "User";
-    document.getElementById("accEmail").textContent = email;
-});
+        document.getElementById("accName").textContent = name || "User";
+        document.getElementById("accEmail").textContent = email;
+    });
 
-// Clear storage on logout
-function logout() {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userEmail");
-}
+    function logout() {
+        localStorage.removeItem("userId");
+        localStorage.removeItem("username");
+        localStorage.removeItem("userEmail");
+    }
 </script>
 
 </body>

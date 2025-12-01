@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 
-// Use the shared database connection
 const db = require("./db");
 
 const app = express();
@@ -66,7 +65,7 @@ app.post("/customer-login", (req, res) => {
 });
 
 
-// ---------------- BUSINESS LOGIN (employee_id + password) ----------------
+// ---------------- BUSINESS LOGIN ----------------
 app.post("/employee-login", (req, res) => {
     const { employee_id, password } = req.body;
 
@@ -105,7 +104,7 @@ app.get("/businesses", (req, res) => {
 });
 
 
-// ---------------- ADD BUSINESS (FROM WEBSITE) ----------------
+// ---------------- ADD BUSINESS ----------------
 app.post("/businesses", (req, res) => {
     const {
         name,
@@ -225,7 +224,7 @@ app.post("/leave-queue", (req, res) => {
 });
 
 
-// ---------------- BUSINESS QUEUE FOR MANAGEMENT PAGE (WITH USERNAMES) ----------------
+// ---------------- BUSINESS QUEUE FOR MANAGEMENT PAGE ----------------
 app.get("/business-queue/:businessId", (req, res) => {
     const businessId = req.params.businessId;
 
@@ -285,7 +284,7 @@ app.post("/clear-business-queue", (req, res) => {
     });
 });
 
-// ---------------- DELETE BUSINESS (AND ITS QUEUE) ----------------
+// ---------------- DELETE BUSINESS ----------------
 app.post("/delete-business", (req, res) => {
     const { businessId } = req.body;
 
@@ -293,22 +292,12 @@ app.post("/delete-business", (req, res) => {
         return res.json({ success: false, message: "No businessId provided" });
     }
 
-    // Optional safety: protect core businesses 1–6
-    if (Number(businessId) <= 6) {
-        return res.json({
-            success: false,
-            message: "This core business cannot be deleted."
-        });
-    }
-
-    // First delete all queue rows for this business
     db.query("DELETE FROM queue WHERE business_id = ?", [businessId], (err) => {
         if (err) {
             console.log("DELETE BUSINESS QUEUE ERROR:", err);
             return res.json({ success: false, message: "DB error clearing queue" });
         }
 
-        // Then delete the business itself
         db.query("DELETE FROM businesses WHERE id = ?", [businessId], (err2, result) => {
             if (err2) {
                 console.log("DELETE BUSINESS ERROR:", err2);
@@ -323,8 +312,6 @@ app.post("/delete-business", (req, res) => {
         });
     });
 });
-
-
 
 // ---------------- START SERVER ----------------
 app.listen(3000, () => {

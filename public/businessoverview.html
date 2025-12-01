@@ -5,6 +5,9 @@
   <title>Business Dashboard – Overview</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="mstyle.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -13,10 +16,8 @@
 
       <h1 class="app-title">Business Dashboard - Overview</h1><br>
 
-      <!-- TOP NAV -->
       <div class="topnav">
 
-          <!-- LEFT NAV LINKS -->
           <div class="nav-left">
               <a href="businessoverview.html" class="active">Overview</a>
               <a href="businessQueue.html">Queues</a>
@@ -24,7 +25,6 @@
               <a href="businessReports.html">Reports/Analytics</a>
           </div>
 
-          <!-- RIGHT SIDE ICONS -->
           <div class="nav-right">
             <div class="account-dropdown">
               <div class="account-icon">👤</div>
@@ -35,20 +35,18 @@
           </div>
       </div>
 
-      <!-- MAIN DASHBOARD -->
       <div class="dashboard-container">
 
           <h2 class="dashboard-title">Your Businesses</h2>
 
           <div class="business-list-rows" id="businessList">
-              <!-- Filled dynamically -->
           </div>
 
       </div>
 
   </div>
 
-  <script>
+<script>
     async function loadBusinesses() {
       const list = document.getElementById("businessList");
       list.innerHTML = "Loading...";
@@ -98,8 +96,8 @@
       }
     }
 
-    loadBusinesses();
-  </script>
+  loadBusinesses();
+</script>
 
 </body>
 </html>

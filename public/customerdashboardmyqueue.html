@@ -12,8 +12,6 @@
     body.modal-open {
         overflow: hidden;
     }
-
-    /* LEAVE CONFIRM MODAL */
     .modal-overlay {
         position: fixed;
         inset: 0;
@@ -49,7 +47,6 @@
     .modal-btn.yes { background: #2ecc71; color: white; }
     .modal-btn.no { background: #e74c3c; color: white; }
 
-    /* SUCCESS POPUP */
     .success-popup {
     position: fixed;
     top: 50%;
@@ -74,13 +71,13 @@
     }
 </style>
 </head>
+
 <body>
 
 <div class="page-wrapper">
 
     <h1 class="app-title">Queue Management System</h1>
 
-    <!-- TOP NAV -->
     <div class="topnav">
         <div class="nav-left">
             <a href="customerdashboard.html">Home</a>
@@ -94,7 +91,6 @@
         </div>
     </div>
 
-    <!-- QUEUE CONTENT -->
     <h2 class="dashboard-title">Queue Status</h2>
 
     <div class="wrapper">
@@ -117,7 +113,6 @@
 
 </div>
 
-<!-- LEAVE CONFIRM MODAL -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box">
         <p>Are you sure you want to leave the queue?</p>
@@ -128,53 +123,51 @@
     </div>
 </div>
 
-<!-- SUCCESS POPUP -->
 <div class="success-popup" id="successPopup">You have left the queue</div>
 
 <script>
-const userId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
 
-async function loadQueue() {
-    const res = await fetch(`http://localhost:3000/user-queue/${userId}`);
-    const data = await res.json();
+    async function loadQueue() {
+        const res = await fetch(`http://localhost:3000/user-queue/${userId}`);
+        const data = await res.json();
 
-    const card = document.getElementById("queueCard");
+        const card = document.getElementById("queueCard");
 
-    if (!data.success || !data.queue) {
-        card.innerHTML = "<h3>You are not in any queue.</h3>";
-        return;
+        if (!data.success || !data.queue) {
+            card.innerHTML = "<h3>You are not in any queue.</h3>";
+            return;
+        }
+
+        const q = data.queue;
+
+        card.innerHTML = `
+            <h3>Current Queue</h3>
+            <p><strong>Business:</strong> ${q.business_name}</p>
+            <p><strong>Ticket Number:</strong> ${q.ticket_number}</p>
+            <button id="leaveBtn" class="btn">Leave Queue</button>
+        `;
+
+        document.getElementById("leaveBtn").addEventListener("click", leaveQueue);
     }
 
-    const q = data.queue;
+    async function leaveQueue() {
+        const res = await fetch("http://localhost:3000/leave-queue", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ userId })
+        });
 
-    card.innerHTML = `
-        <h3>Current Queue</h3>
-        <p><strong>Business:</strong> ${q.business_name}</p>
-        <p><strong>Ticket Number:</strong> ${q.ticket_number}</p>
-        <button id="leaveBtn" class="btn">Leave Queue</button>
-    `;
+        const data = await res.json();
 
-    document.getElementById("leaveBtn").addEventListener("click", leaveQueue);
-}
+        if (!data.success) return alert(data.message);
 
-async function leaveQueue() {
-    const res = await fetch("http://localhost:3000/leave-queue", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ userId })
-    });
+        alert("You left the queue.");
+        window.location.reload();
+    }
 
-    const data = await res.json();
-
-    if (!data.success) return alert(data.message);
-
-    alert("You left the queue.");
-    window.location.reload();
-}
-
-loadQueue();
+    loadQueue();
 </script>
-
 
 </body>
 </html>

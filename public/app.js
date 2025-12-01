@@ -29,8 +29,6 @@ async function login() {
     window.location.href = "businessoverview.html";
 }
 
-
-
 // ==========================================================
 // CUSTOMER LOGIN
 // ==========================================================
@@ -61,8 +59,6 @@ async function loginUser(e) {
 
     window.location.href = "customerdashboard.html";
 }
-
-
 
 // ==========================================================
 // DOMContentLoaded: signup + customer login + business list

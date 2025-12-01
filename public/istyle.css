@@ -159,7 +159,6 @@ button:hover {
     cursor: pointer;
 }
 
-/* LARGE PAGE CONTAINER */
 .page-wrapper {
     width: 90%;
     max-width: 1100px;
@@ -349,4 +348,11 @@ button:hover {
 .modal-btn.no {
     background: #e74c3c;
     color: white;
+}
+
+.business-row-actions .btn {
+    padding: 10px 0px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    max-width: 100px;       
 }

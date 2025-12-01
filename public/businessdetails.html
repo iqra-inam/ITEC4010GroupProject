@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <title>Business Details</title>
     <link rel="stylesheet" href="istyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 <div class="page-wrapper">
 
-    <!-- TOP NAV -->
     <div class="topnav">
         <div class="nav-left">
             <a href="customerdashboard.html">Home</a>
@@ -28,7 +30,6 @@
         </div>
     </div>
 
-    <!-- DETAILS CARD -->
     <div id="container" class="details-card">
         <h2 id="bizName"></h2>
         <p><strong>Category:</strong> <span id="bizCategory"></span></p>
@@ -43,77 +44,73 @@
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const businessId = params.get("id");
-const userId = localStorage.getItem("userId");
+    const params = new URLSearchParams(window.location.search);
+    const businessId = params.get("id");
+    const userId = localStorage.getItem("userId");
 
-const joinBtn = document.getElementById("joinBtn");
-const leaveBtn = document.getElementById("leaveBtn");
+    const joinBtn = document.getElementById("joinBtn");
+    const leaveBtn = document.getElementById("leaveBtn");
 
-// Load business details
-async function loadBusiness() {
-    const res = await fetch("http://localhost:3000/businesses");
-    const data = await res.json();
+    async function loadBusiness() {
+        const res = await fetch("http://localhost:3000/businesses");
+        const data = await res.json();
 
-    const biz = data.businesses.find(b => b.id == businessId);
-    if (!biz) return;
+        const biz = data.businesses.find(b => b.id == businessId);
+        if (!biz) return;
 
-    document.getElementById("bizName").textContent = biz.name;
-    document.getElementById("bizCategory").textContent = biz.category;
-    document.getElementById("bizLocation").textContent = biz.location;
-    document.getElementById("bizDescription").textContent = biz.description;
-    document.getElementById("bizQueueLength").textContent = biz.queue_length;
+        document.getElementById("bizName").textContent = biz.name;
+        document.getElementById("bizCategory").textContent = biz.category;
+        document.getElementById("bizLocation").textContent = biz.location;
+        document.getElementById("bizDescription").textContent = biz.description;
+        document.getElementById("bizQueueLength").textContent = biz.queue_length;
 
-    checkUserQueue();
-}
+        checkUserQueue();
+    }
 
-// Check if user already in queue
-async function checkUserQueue() {
-    const res = await fetch(`http://localhost:3000/user-queue/${userId}`);
-    const data = await res.json();
+    async function checkUserQueue() {
+        const res = await fetch(`http://localhost:3000/user-queue/${userId}`);
+        const data = await res.json();
 
-    if (data.success && data.queue) {
-        if (String(data.queue.business_id) === String(businessId)) {
-            joinBtn.textContent = `Your Ticket: ${data.queue.ticket_number}`;
-            joinBtn.disabled = true;
-            leaveBtn.style.display = "inline-block";
+        if (data.success && data.queue) {
+            if (String(data.queue.business_id) === String(businessId)) {
+                joinBtn.textContent = `Your Ticket: ${data.queue.ticket_number}`;
+                joinBtn.disabled = true;
+                leaveBtn.style.display = "inline-block";
+            }
         }
     }
-}
 
-// Join queue
-joinBtn.addEventListener("click", async () => {
-    if (joinBtn.disabled) return;
+    joinBtn.addEventListener("click", async () => {
+        if (joinBtn.disabled) return;
 
-    const res = await fetch("http://localhost:3000/join-queue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, businessId })
+        const res = await fetch("http://localhost:3000/join-queue", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, businessId })
+        });
+
+        const data = await res.json();
+        if (!data.success) return alert(data.message);
+
+        alert("You joined the queue! Ticket #" + data.ticketNumber);
+        window.location.reload();
     });
 
-    const data = await res.json();
-    if (!data.success) return alert(data.message);
+    leaveBtn.addEventListener("click", async () => {
+        const res = await fetch("http://localhost:3000/leave-queue", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId })
+        });
 
-    alert("You joined the queue! Ticket #" + data.ticketNumber);
-    window.location.reload();
-});
+        const data = await res.json();
+        if (!data.success) return alert(data.message);
 
-// Leave queue
-leaveBtn.addEventListener("click", async () => {
-    const res = await fetch("http://localhost:3000/leave-queue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId })
+        alert("You have left the queue.");
+        window.location.reload();
     });
 
-    const data = await res.json();
-    if (!data.success) return alert(data.message);
-
-    alert("You have left the queue.");
-    window.location.reload();
-});
-
-loadBusiness();
+    loadBusiness();
 </script>
 
 </body>
